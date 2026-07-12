@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京東區藝文漫步：從池袋出發的一日提案</title>
+    <title>東京東區藝文漫步：從池袋出發的質感一日</title>
     <style>
+        /* 藝文風專屬配色 (Oatmeal, Coffee, Muted Green) */
         :root {
-            --primary-color: #1e293b; 
-            --accent-color: #c29b68;  
-            --bg-color: #f8fafc;      
+            --bg-color: #f7f5f0;       /* 燕麥白/畫布底色 */
+            --primary-color: #5c4d43;  /* 深焙咖啡棕 (主標題/強調色) */
+            --accent-color: #8a9a86;   /* 莫蘭迪綠 (木場公園/自然感) */
             --card-bg: #ffffff;
-            --text-color: #334155;
-            --text-light: #64748b;
-            --border-color: #e2e8f0;
-            --btn-hover: #f1f5f9;
-            --transport-bg: #f1f5f9;
+            --text-main: #4a4a4a;      /* 柔和黑 (內文) */
+            --text-light: #888888;
+            --border-color: #e6e4de;
+            --btn-hover: #eceadd;
+            --transport-bg: #f9f8f6;
         }
 
         * {
@@ -24,18 +25,21 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.7;
+            color: var(--text-main);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* 頂部標題區：加入淡入動畫 */
         header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #0f172a 100%);
+            background-color: var(--primary-color);
             color: #ffffff;
-            padding: 50px 20px;
+            padding: 60px 20px;
             text-align: center;
             position: relative;
+            animation: fadeInDown 0.8s ease-out;
         }
 
         header::after {
@@ -44,119 +48,141 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: var(--accent-color);
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-color), #d4c5b9);
         }
 
         header h1 {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
         }
 
         header p {
-            color: var(--accent-color);
-            font-size: 1rem;
-            font-weight: 300;
+            color: #d4c5b9;
+            font-size: 0.95rem;
             letter-spacing: 1px;
         }
 
+        /* 主容器 */
         .container {
-            max-width: 800px;
+            max-width: 760px;
             margin: 40px auto;
             padding: 0 20px;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.2s;
         }
 
+        /* 手風琴時間軸設計 */
         .timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 7px;
-            top: 10px;
-            bottom: 10px;
-            width: 2px;
-            background-color: var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .timeline-item {
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: -30px;
-            top: 6px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
             background-color: var(--card-bg);
-            border: 3px solid var(--accent-color);
-            z-index: 1;
-        }
-
-        .timeline-content {
-            background-color: var(--card-bg);
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
 
-        .timeline-content:hover {
+        .timeline-item:hover {
+            box-shadow: 0 8px 25px rgba(92, 77, 67, 0.08);
             transform: translateY(-2px);
-            box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 可點擊的標題列 */
+        .timeline-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            user-select: none;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .time-badge {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: #ffffff;
+            background-color: var(--accent-color);
+            color: #fff;
             padding: 4px 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
             border-radius: 20px;
-            margin-bottom: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .location-title {
+            font-size: 1.2rem;
             color: var(--primary-color);
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-            border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 8px;
+            font-weight: 600;
         }
 
-        /* 交通與費用資訊區塊 */
+        /* 展開/收起箭頭動畫 */
+        .toggle-icon {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timeline-item.active .toggle-icon {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+
+        /* 完美平滑展開的 CSS Grid 技巧 */
+        .timeline-content-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #faf9f7;
+        }
+
+        .timeline-item.active .timeline-content-wrapper {
+            grid-template-rows: 1fr;
+        }
+
+        .timeline-content {
+            overflow: hidden;
+        }
+
+        /* 內容細節區塊 */
+        .content-inner {
+            padding: 0 24px 24px 24px;
+            border-top: 1px dashed var(--border-color);
+            margin-top: -1px; /* 隱藏未展開時的邊界 */
+        }
+
         .info-box {
             background-color: var(--transport-bg);
-            border-left: 4px solid var(--text-light);
-            padding: 10px 15px;
-            margin-bottom: 15px;
+            border-left: 3px solid var(--accent-color);
+            padding: 12px 16px;
+            margin: 20px 0 15px 0;
             font-size: 0.9rem;
             border-radius: 0 6px 6px 0;
-            color: var(--primary-color);
-        }
-        
-        .info-box strong {
-            color: var(--text-color);
+            color: var(--text-main);
         }
 
-        /* 景點細節清單 */
-        .details-list {
+        .details-list, .options-list {
             list-style-type: none;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .details-list li {
             position: relative;
             padding-left: 20px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-size: 0.95rem;
         }
 
@@ -165,66 +191,66 @@
             position: absolute;
             left: 0;
             color: var(--accent-color);
-            font-size: 0.9rem;
-        }
-
-        /* 選項清單 (午餐、購物等) */
-        .options-list {
-            list-style-type: none;
-            margin-top: 10px;
-            margin-bottom: 15px;
+            font-size: 0.8rem;
+            top: 4px;
         }
 
         .options-list li {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 10px 15px;
-            margin-bottom: 8px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 12px;
             font-size: 0.95rem;
         }
 
         .options-list li strong {
             color: var(--primary-color);
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            font-size: 1rem;
         }
 
+        /* 導航按鈕設計 */
         .nav-link {
             display: inline-flex;
             align-items: center;
-            margin-top: 5px;
-            padding: 8px 16px;
+            margin-top: 10px;
+            padding: 8px 20px;
             background-color: var(--primary-color);
             color: #ffffff;
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 20px;
-            transition: background 0.2s, transform 0.1s;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 25px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(92, 77, 67, 0.2);
         }
 
         .nav-link:hover {
-            background-color: #334155;
+            background-color: #4a3e36;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(92, 77, 67, 0.3);
         }
         
         .nav-link:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
         /* 總結區塊 */
         .summary-box {
-            background-color: #fffbeb;
-            border: 2px solid #fde68a;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            text-align: center;
+            background-color: #f3efe8;
+            border: 1px solid #d4c5b9;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 40px;
         }
         
         .summary-box h3 {
-            color: #b45309;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.2rem;
         }
 
         footer {
@@ -233,168 +259,224 @@
             color: var(--text-light);
             font-size: 0.85rem;
             margin-top: 20px;
-            border-top: 1px solid var(--border-color);
+        }
+
+        /* 動畫 Keyframes */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .header-left { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .location-title { font-size: 1.1rem; }
+            .timeline-header { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>東京東區藝文與質感生活一日遊</h1>
-        <p>從池袋出發：木場 ➔ 清澄白河 ➔ 銀座 ➔ 池袋</p>
+        <h1>東京東區質感與工藝漫步</h1>
+        <p>池袋 ➔ 木場 ➔ 清澄白河 ➔ 藏前/日本橋</p>
     </header>
 
     <div class="container">
-        
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">10:00 出發</span>
-                    <h3 class="location-title">木場公園：都會中的開闊綠洲</h3>
-                    
-                    <div class="info-box">
-                        <strong>🚃 交通方式：</strong> 搭乘東京地鐵有樂町線（池袋 ➔ 飯田橋），同站轉乘東西線（飯田橋 ➔ 木場站）。<br>
-                        <strong>🎫 票價：</strong> 250 日圓
+        <p style="text-align: center; margin-bottom: 20px; color: var(--text-light); font-size: 0.9rem;">
+            💡 點擊下方行程卡片即可展開詳細內容與交通導航。
+        </p>
+
+        <div class="timeline" id="accordion">
+            
+            <!-- 行程 1 -->
+            <div class="timeline-item active"> <!-- 預設展開第一項 -->
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">10:00 出發</span>
+                        <h3 class="location-title">木場公園：都會中的開闊綠洲</h3>
                     </div>
-                    
-                    <ul class="details-list">
-                        <li><strong>景點特色：</strong> 早年為木材集散地，現已重劃為腹地廣大的綠地公園。園內著名的白色大吊橋設計俐落，非常適合散步、沉澱思緒，感受下町寧靜感。</li>
-                    </ul>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=木場公園" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <div class="info-box">
+                                <strong>🚃 交通：</strong> 搭乘有樂町線（池袋 ➔ 飯田橋），同站轉乘東西線（飯田橋 ➔ 木場站）。<br>
+                                <strong>🎫 票價：</strong> 250 日圓
+                            </div>
+                            <ul class="details-list">
+                                <li>早年為木材集散地，現已重劃為廣大的綠地公園。</li>
+                                <li>園內著名的白色大吊橋設計俐落，非常適合早晨散步、沉澱思緒，感受悠閒的下町氛圍。</li>
+                            </ul>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=木場公園" target="_blank" class="nav-link">📍 從我的位置導航至 木場公園</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 行程 2 -->
             <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">10:45 藝術探索</span>
-                    <h3 class="location-title">東京都現代美術館 (MOT)</h3>
-                    
-                    <div class="info-box">
-                        <strong>🚶 交通方式：</strong> 沿著木場公園內部步道往北步行約 10-15 分鐘。<br>
-                        <strong>🎫 票價：</strong> 步行 0 日圓
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">10:45 探索</span>
+                        <h3 class="location-title">東京都現代美術館 (MOT)</h3>
                     </div>
-
-                    <ul class="details-list">
-                        <li><strong>景點特色：</strong> 建築師柳澤孝彥設計，大量使用鋼架與幾何線條，光影層次豐富，本身就是極佳的空間設計範本。</li>
-                        <li><strong>常設展 (MOT Collection)：</strong> 展示戰後日本與國際當代藝術作品，館藏超過 5500 件，涵蓋普普藝術、極簡主義到現代前衛媒材。</li>
-                        <li><strong>常設展票價：</strong> 一般成人 500 日圓 / 大學生與專科生 400 日圓 / 高中生及 65 歲以上 250 日圓。</li>
-                    </ul>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=東京都現代美術館" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <div class="info-box">
+                                <strong>🚶 交通：</strong> 沿著木場公園內部步道往北，步行約 10-15 分鐘。
+                            </div>
+                            <ul class="details-list">
+                                <li>建築師柳澤孝彥設計，大量使用鋼架與幾何線條，光影層次豐富，本身即是極佳的空間設計範本。</li>
+                                <li><strong>常設展：</strong> 展示戰後日本與國際當代藝術作品，館藏涵蓋普普藝術、極簡主義等。</li>
+                                <li><strong>常設展票價：</strong> 成人 500 日圓 / 大學生 400 日圓 / 高中生及 65 歲以上 250 日圓。</li>
+                            </ul>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=東京都現代美術館" target="_blank" class="nav-link">📍 從我的位置導航至 美術館</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 行程 3 -->
             <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">13:00 午餐</span>
-                    <h3 class="location-title">周邊在地平價美食推薦</h3>
-                    <p style="font-size: 0.95rem; margin-bottom: 10px;">不吃美術館餐廳，帶你走入周邊街區品嚐在地人氣平價選擇：</p>
-                    
-                    <ul class="options-list">
-                        <li>
-                            <strong>1. 深川宿 (富岡八幡店 / 清澄白河周邊)</strong>
-                            品嚐在地名物「深川飯 (蛤蜊飯)」。這是江戶時代漁夫的傳統料理，鮮甜飽足。預算約 1,500 - 2,000 日圓。
-                        </li>
-                        <li>
-                            <strong>2. 蕎麥麵 滿留賀 (Maruka) 或 長壽庵</strong>
-                            美術館周邊充滿下町風情的傳統蕎麥麵/烏龍麵老店。提供炸蝦蕎麥麵或丼飯套餐，平價又道地。預算約 800 - 1,200 日圓。
-                        </li>
-                        <li>
-                            <strong>3. 清澄白河周邊獨立日式定食屋</strong>
-                            如「實用食堂」等昭和風情定食小餐館，提供漢堡排、薑汁燒肉定食，充滿日常人情味。預算約 800 - 1,000 日圓。
-                        </li>
-                    </ul>
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">13:00 午餐</span>
+                        <h3 class="location-title">在地平價美食推薦 (3選1)</h3>
+                    </div>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <p style="margin-top: 15px; margin-bottom: 10px; font-size: 0.95rem;">深入周邊街區，品嚐在地人氣平價餐點：</p>
+                            <ul class="options-list">
+                                <li>
+                                    <strong>1. 深川宿 (富岡八幡店) - 傳統深川飯</strong>
+                                    江戶時代漁夫的傳統料理「蛤蜊飯」，鮮甜飽足。預算約 1,500-2,000 日圓。
+                                    <br><a href="https://www.google.com/maps/dir/?api=1&destination=深川宿+富岡八幡店" target="_blank" class="nav-link" style="margin-top:8px;">📍 導航至 深川宿</a>
+                                </li>
+                                <li>
+                                    <strong>2. 蕎麥麵 滿留賀 (Maruka)</strong>
+                                    美術館旁的傳統蕎麥麵老店，炸蝦蕎麥麵平價道地。預算約 800-1,200 日圓。
+                                    <br><a href="https://www.google.com/maps/dir/?api=1&destination=満留賀+清澄白河" target="_blank" class="nav-link" style="margin-top:8px;">📍 導航至 滿留賀</a>
+                                </li>
+                                <li>
+                                    <strong>3. 實用食堂 - 昭和風定食屋</strong>
+                                    提供高CP值漢堡排、薑汁燒肉定食，充滿日常人情味。預算約 800-1,000 日圓。
+                                    <br><a href="https://www.google.com/maps/dir/?api=1&destination=実用洋食+七福" target="_blank" class="nav-link" style="margin-top:8px;">📍 導航至 實用食堂</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 行程 4 -->
             <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">14:30 質感午後</span>
-                    <h3 class="location-title">藍瓶咖啡 清澄白河旗艦店</h3>
-                    
-                    <div class="info-box">
-                        <strong>🚶 交通方式：</strong> 從午餐地點/美術館步行約 10-15 分鐘。<br>
-                        <strong>🎫 票價：</strong> 步行 0 日圓
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">14:30 休憩</span>
+                        <h3 class="location-title">藍瓶咖啡 清澄白河旗艦店</h3>
                     </div>
-
-                    <ul class="details-list">
-                        <li><strong>景點特色：</strong> Blue Bottle 進軍日本的一號店，由舊倉庫改建。挑高廠房空間放置大型烘豆機具，充滿濃厚工業風，能親眼觀賞職人精準的手沖工藝。</li>
-                        <li><strong>推薦飲品：</strong> 
-                            <br>- <strong>單品手沖 (Single Origin Drip)：</strong> 約 750 日圓起，品嚐當季嚴選豆的明亮果酸。
-                            <br>- <strong>紐澳良冰咖啡 (NOLA)：</strong> 約 650 日圓，加入菊苣根烘焙混合牛奶，口感醇厚具獨特香氣。
-                        </li>
-                    </ul>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <div class="info-box">
+                                <strong>🚶 交通：</strong> 從美術館或餐廳步行約 10-15 分鐘。
+                            </div>
+                            <ul class="details-list">
+                                <li>日本藍瓶一號店，舊倉庫改建。挑高廠房放置大型烘豆機具，工業風格強烈，能近距離觀賞職人手沖。</li>
+                                <li><strong>單品手沖 (Single Origin Drip)：</strong> 約 750 日圓起，明亮果酸與層次豐富。</li>
+                                <li><strong>紐澳良冰咖啡 (NOLA)：</strong> 約 650 日圓，菊苣根烘焙混合牛奶，獨特香醇。</li>
+                            </ul>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="nav-link">📍 從我的位置導航至 藍瓶咖啡</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 行程 5 -->
             <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">16:30 傍晚購物</span>
-                    <h3 class="location-title">銀座：頂級選物與工藝漫步</h3>
-                    
-                    <div class="info-box">
-                        <strong>🚃 交通方式：</strong> 步行至清澄白河站，搭乘東京地鐵半藏門線（清澄白河 ➔ 大手町），轉乘丸之內線（大手町 ➔ 銀座）。<br>
-                        <strong>🎫 票價：</strong> 200 日圓
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">16:30 購物</span>
+                        <h3 class="location-title">設計工藝巡禮：藏前 或 日本橋</h3>
                     </div>
-
-                    <p style="font-size: 0.95rem; margin-bottom: 10px;">為呼應今日的質感與藝文行程，為您推薦以下 3 個銀座購物地點：</p>
-                    <ul class="options-list">
-                        <li>
-                            <strong>1. 銀座 伊東屋 (G.Itoya)</strong>
-                            擁有百年歷史的文具殿堂，整棟 12 層樓充滿世界頂級文具、和紙與設計辦公小物，文具控與設計師的必逛聖地。
-                        </li>
-                        <li>
-                            <strong>2. 鳩居堂 (Kyukyodo)</strong>
-                            日本傳統工藝代表，專營頂級和紙、線香、書法用品與傳統明信片，非常適合挑選高雅精緻的伴手禮。
-                        </li>
-                        <li>
-                            <strong>3. 銀座 Loft 或 東急手創館 (Tokyu Hands)</strong>
-                            如果你想尋找現代生活雜貨、高品質的戶外用品或是美妝小物，這裡能提供最全面、最新潮的日本生活設計選物。
-                        </li>
-                    </ul>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=銀座站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <p style="margin-top: 15px; margin-bottom: 10px; font-size: 0.95rem;">清澄白河小店傍晚陸續打烊。為延續工藝與藝文感，為您精選兩個替代購物聖地：</p>
+                            
+                            <ul class="options-list">
+                                <li>
+                                    <strong>選擇 A：藏前 (Kuramae) - 東京的布魯克林</strong>
+                                    <div style="font-size: 0.85rem; color: #888; margin-bottom: 8px;">🚃 交通：搭乘大江戶線（清澄白河 ➔ 藏前），約 10 分鐘，180 日圓。</div>
+                                    以手工皮件、職人咖啡與手作雜貨聞名。必逛「Kakimori」自組專屬筆記本與墨水，或是尋找獨立皮件品牌「m+」。
+                                    <br><a href="https://www.google.com/maps/dir/?api=1&destination=Kakimori+蔵前" target="_blank" class="nav-link" style="margin-top:8px;">📍 導航至 藏前 Kakimori</a>
+                                </li>
+                                <li>
+                                    <strong>選擇 B：日本橋 (Nihonbashi) - 新舊交融的和風工藝</strong>
+                                    <div style="font-size: 0.85rem; color: #888; margin-bottom: 8px;">🚃 交通：搭乘半藏門線（清澄白河 ➔ 三越前），約 5 分鐘，180 日圓。</div>
+                                    前往 Coredo 室町商場，逛逛「中川政七商店」的高質感日本傳統生活道具，或在周邊尋訪歷史悠久的和紙、百年柴魚片等老舖。
+                                    <br><a href="https://www.google.com/maps/dir/?api=1&destination=COREDO+Muromachi" target="_blank" class="nav-link" style="margin-top:8px;">📍 導航至 日本橋 Coredo室町</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 行程 6 -->
             <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-content">
-                    <span class="time-badge">20:30 歸途</span>
-                    <h3 class="location-title">晚餐後返回池袋</h3>
-                    
-                    <div class="info-box">
-                        <strong>🚃 交通方式：</strong> 從銀座站搭乘東京地鐵丸之內線（直達池袋站）。<br>
-                        <strong>🎫 票價：</strong> 210 日圓
+                <div class="timeline-header" onclick="toggleAccordion(this)">
+                    <div class="header-left">
+                        <span class="time-badge">20:30 歸途</span>
+                        <h3 class="location-title">晚餐後返回池袋</h3>
                     </div>
-
-                    <ul class="details-list">
-                        <li><strong>行程結語：</strong> 晚上在銀座享用精緻晚餐後，搭乘丸之內線不需轉車即可輕鬆回到池袋，為充實的藝文之旅劃下句點。</li>
-                    </ul>
-                    <a href="https://www.google.com/maps/dir/?api=1&destination=池袋站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="timeline-content-wrapper">
+                    <div class="timeline-content">
+                        <div class="content-inner">
+                            <div class="info-box" style="margin-top: 15px;">
+                                <strong>從藏前返回：</strong> 搭乘大江戶線至「春日站」，轉乘丸之內線直達「池袋站」。(約 290 日圓)<br><br>
+                                <strong>從日本橋返回：</strong> 於三越前搭乘半藏門線至「大手町站」，轉乘丸之內線直達「池袋站」。(約 200 日圓)
+                            </div>
+                            <ul class="details-list">
+                                <li>在藏前或日本橋享用晚餐後，順暢地搭乘地鐵回到池袋，為充實的一天劃下完美句點。</li>
+                            </ul>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=池袋站" target="_blank" class="nav-link">📍 導航回 池袋站</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
 
+        <!-- 交通費總結 -->
         <div class="summary-box">
             <h3>💳 交通費試算總結 (池袋出發回池袋)</h3>
-            <p style="font-size: 0.95rem; margin-bottom: 15px; color: #78350f;">本次行程完全可利用「東京地鐵 (Tokyo Metro)」完成移動，以下為方案比較：</p>
             
-            <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; max-width: 500px; margin: 0 auto;">
-                <div style="background: #fff; padding: 12px; border-radius: 6px; border-left: 4px solid #ef4444;">
-                    <strong>🔺 最高交通費方案 (單次刷西瓜卡/IC卡)：約 660 日圓</strong>
-                    <br><span style="font-size: 0.85rem; color: var(--text-light);">池袋→木場(250) + 清澄白河→銀座(200) + 銀座→池袋(210) = 660日圓。(若中途搭錯或混搭JR/都營線，費用可能逼近 800-900日圓)</span>
-                </div>
-                
-                <div style="background: #fff; padding: 12px; border-radius: 6px; border-left: 4px solid #10b981;">
-                    <strong>✅ 最低交通費方案 (購買一日券)：600 日圓</strong>
-                    <br><span style="font-size: 0.85rem; color: var(--text-light);">於地鐵售票機購買「東京地鐵 24小時券 (Tokyo Metro 24-hour Ticket)」。只要 600 日圓即可無限次搭乘，最省錢且不用擔心搭錯車！</span>
-                </div>
+            <div style="background: var(--card-bg); padding: 16px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                <strong style="color: #d97706;">🔺 最高交通費方案 (單次刷 IC 卡)</strong>
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">池袋→木場(250) + 清澄白河→藏前/日本橋(180) + 返回池袋(約290) = 約 <strong>720 日圓</strong>。</p>
+            </div>
+            
+            <div style="background: var(--card-bg); padding: 16px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border-left: 4px solid var(--accent-color);">
+                <strong style="color: var(--accent-color);">✅ 最推薦方案 (購買一日券)</strong>
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 4px;">於地鐵售票機購買<strong>「東京地鐵 24小時券」 (600 日圓)</strong> 搭配 <strong>「都營地鐵單程」</strong>（若去藏前）。若全天只搭乘東京 Metro 系統（如選擇去日本橋），購買 600 日圓的一日券最為划算且不需煩惱轉乘費用！</p>
             </div>
         </div>
 
@@ -404,5 +486,25 @@
         <p>© 2026 Tokyo Art & Craft Walk. Designed for Travel Enthusiasts.</p>
     </footer>
 
+    <!-- JavaScript：控制手風琴折疊特效 -->
+    <script>
+        function toggleAccordion(element) {
+            // 取得被點擊的 timeline-item 父層
+            const currentItem = element.parentElement;
+            
+            // 如果你想要「點擊一個，自動收合其他個」，可以解除下方註解：
+            /*
+            const allItems = document.querySelectorAll('.timeline-item');
+            allItems.forEach(item => {
+                if (item !== currentItem) {
+                    item.classList.remove('active');
+                }
+            });
+            */
+            
+            // 切換當前點擊項目的 active 狀態
+            currentItem.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
