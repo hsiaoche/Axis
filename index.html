@@ -132,8 +132,8 @@
             padding-bottom: 8px;
         }
 
-        /* 交通資訊區塊 */
-        .transport-box {
+        /* 交通與費用資訊區塊 */
+        .info-box {
             background-color: var(--transport-bg);
             border-left: 4px solid var(--text-light);
             padding: 10px 15px;
@@ -143,7 +143,7 @@
             color: var(--primary-color);
         }
         
-        .transport-box strong {
+        .info-box strong {
             color: var(--text-color);
         }
 
@@ -168,6 +168,28 @@
             font-size: 0.9rem;
         }
 
+        /* 選項清單 (午餐、購物等) */
+        .options-list {
+            list-style-type: none;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .options-list li {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .options-list li strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 4px;
+        }
+
         .nav-link {
             display: inline-flex;
             align-items: center;
@@ -190,6 +212,21 @@
             transform: scale(0.98);
         }
 
+        /* 總結區塊 */
+        .summary-box {
+            background-color: #fffbeb;
+            border: 2px solid #fde68a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .summary-box h3 {
+            color: #b45309;
+            margin-bottom: 10px;
+        }
+
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -210,113 +247,157 @@
     <div class="container">
         
         <div class="timeline">
-            <!-- 行程 1：出發至木場公園 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <span class="time-badge">10:00 出發</span>
                     <h3 class="location-title">木場公園：都會中的開闊綠洲</h3>
                     
-                    <div class="transport-box">
-                        <strong>🚃 交通方式：</strong> 搭乘東京地鐵有樂町線（池袋 ➔ 飯田橋），轉乘東西線（飯田橋 ➔ 木場站）。<br>
+                    <div class="info-box">
+                        <strong>🚃 交通方式：</strong> 搭乘東京地鐵有樂町線（池袋 ➔ 飯田橋），同站轉乘東西線（飯田橋 ➔ 木場站）。<br>
                         <strong>🎫 票價：</strong> 250 日圓
                     </div>
                     
                     <ul class="details-list">
-                        <li><strong>景點特色：</strong> 早年為木材集散地，現已重劃為腹地廣大的綠地公園。園內著名的白色大吊橋設計俐落，非常適合散步、沉澱思緒，感受遠離新宿、池袋等鬧區的下町寧靜感。</li>
+                        <li><strong>景點特色：</strong> 早年為木材集散地，現已重劃為腹地廣大的綠地公園。園內著名的白色大吊橋設計俐落，非常適合散步、沉澱思緒，感受下町寧靜感。</li>
                     </ul>
-                    
                     <a href="https://www.google.com/maps/dir/?api=1&destination=木場公園" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
 
-            <!-- 行程 2：東京都現代美術館 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <span class="time-badge">11:00 藝術探索</span>
+                    <span class="time-badge">10:45 藝術探索</span>
                     <h3 class="location-title">東京都現代美術館 (MOT)</h3>
                     
-                    <div class="transport-box">
+                    <div class="info-box">
                         <strong>🚶 交通方式：</strong> 沿著木場公園內部步道往北步行約 10-15 分鐘。<br>
-                        <strong>🎫 票價：</strong> 0 日圓
+                        <strong>🎫 票價：</strong> 步行 0 日圓
                     </div>
 
                     <ul class="details-list">
-                        <li><strong>景點特色：</strong> 日本最具代表性的現代美術館之一，由建築師柳澤孝彥設計。大量使用鋼架與幾何線條，光影層次豐富，本身就是極佳的空間設計範本。</li>
-                        <li><strong>常設展 (MOT Collection)：</strong> 展示戰後日本與國際當代藝術作品，館藏超過 5500 件，每年會進行 3-4 次輪替展出，涵蓋普普藝術、極簡主義到現代前衛媒材。</li>
-                        <li><strong>常設展票價：</strong> 一般成人 500 日圓 / 大學生與專門學校生 400 日圓 / 高中生及 65 歲以上 250 日圓。</li>
+                        <li><strong>景點特色：</strong> 建築師柳澤孝彥設計，大量使用鋼架與幾何線條，光影層次豐富，本身就是極佳的空間設計範本。</li>
+                        <li><strong>常設展 (MOT Collection)：</strong> 展示戰後日本與國際當代藝術作品，館藏超過 5500 件，涵蓋普普藝術、極簡主義到現代前衛媒材。</li>
+                        <li><strong>常設展票價：</strong> 一般成人 500 日圓 / 大學生與專科生 400 日圓 / 高中生及 65 歲以上 250 日圓。</li>
                     </ul>
-                    
                     <a href="https://www.google.com/maps/dir/?api=1&destination=東京都現代美術館" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
 
-            <!-- 行程 3：藍瓶咖啡 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <span class="time-badge">15:00 質感午後</span>
+                    <span class="time-badge">13:00 午餐</span>
+                    <h3 class="location-title">周邊在地平價美食推薦</h3>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px;">不吃美術館餐廳，帶你走入周邊街區品嚐在地人氣平價選擇：</p>
+                    
+                    <ul class="options-list">
+                        <li>
+                            <strong>1. 深川宿 (富岡八幡店 / 清澄白河周邊)</strong>
+                            品嚐在地名物「深川飯 (蛤蜊飯)」。這是江戶時代漁夫的傳統料理，鮮甜飽足。預算約 1,500 - 2,000 日圓。
+                        </li>
+                        <li>
+                            <strong>2. 蕎麥麵 滿留賀 (Maruka) 或 長壽庵</strong>
+                            美術館周邊充滿下町風情的傳統蕎麥麵/烏龍麵老店。提供炸蝦蕎麥麵或丼飯套餐，平價又道地。預算約 800 - 1,200 日圓。
+                        </li>
+                        <li>
+                            <strong>3. 清澄白河周邊獨立日式定食屋</strong>
+                            如「實用食堂」等昭和風情定食小餐館，提供漢堡排、薑汁燒肉定食，充滿日常人情味。預算約 800 - 1,000 日圓。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">14:30 質感午後</span>
                     <h3 class="location-title">藍瓶咖啡 清澄白河旗艦店</h3>
                     
-                    <div class="transport-box">
-                        <strong>🚶 交通方式：</strong> 從美術館出發，穿過寧靜的住宅區步行約 15 分鐘。<br>
-                        <strong>🎫 票價：</strong> 0 日圓
+                    <div class="info-box">
+                        <strong>🚶 交通方式：</strong> 從午餐地點/美術館步行約 10-15 分鐘。<br>
+                        <strong>🎫 票價：</strong> 步行 0 日圓
                     </div>
 
                     <ul class="details-list">
-                        <li><strong>景點特色：</strong> 這是 Blue Bottle 進軍日本的一號店，由舊倉庫改建而成。挑高的廠房空間內放置了大型烘豆機具，充滿濃厚工業風。能在這裡親眼觀賞職人精準的手沖工藝。</li>
+                        <li><strong>景點特色：</strong> Blue Bottle 進軍日本的一號店，由舊倉庫改建。挑高廠房空間放置大型烘豆機具，充滿濃厚工業風，能親眼觀賞職人精準的手沖工藝。</li>
                         <li><strong>推薦飲品：</strong> 
-                            <br>- <strong>單品手沖咖啡 (Single Origin Drip)：</strong> 約 750 日圓起，能品嚐到當季嚴選豆的明亮果酸與層次。
-                            <br>- <strong>紐澳良冰咖啡 (NOLA)：</strong> 約 650 日圓，加入菊苣根烘焙並混合有機蔗糖與牛奶，口感醇厚且帶有獨特香氣。
+                            <br>- <strong>單品手沖 (Single Origin Drip)：</strong> 約 750 日圓起，品嚐當季嚴選豆的明亮果酸。
+                            <br>- <strong>紐澳良冰咖啡 (NOLA)：</strong> 約 650 日圓，加入菊苣根烘焙混合牛奶，口感醇厚具獨特香氣。
                         </li>
                     </ul>
-                    
                     <a href="https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
 
-            <!-- 行程 4：銀座逛街與晚餐 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
-                    <span class="time-badge">17:00 傍晚購物</span>
-                    <h3 class="location-title">銀座：頂級選物與晚餐饗宴</h3>
+                    <span class="time-badge">16:30 傍晚購物</span>
+                    <h3 class="location-title">銀座：頂級選物與工藝漫步</h3>
                     
-                    <div class="transport-box">
+                    <div class="info-box">
                         <strong>🚃 交通方式：</strong> 步行至清澄白河站，搭乘東京地鐵半藏門線（清澄白河 ➔ 大手町），轉乘丸之內線（大手町 ➔ 銀座）。<br>
                         <strong>🎫 票價：</strong> 200 日圓
                     </div>
 
-                    <ul class="details-list">
-                        <li><strong>景點特色：</strong> 清澄白河一帶店舖較早打烊。轉往銀座可造訪如伊東屋 (Itoya) 等頂級文具老店，或是 DOVER STREET MARKET 等高端選物店。晚餐則有豐富的壽司、天婦羅與和食割烹可供選擇，延續高質感的行程氛圍。</li>
+                    <p style="font-size: 0.95rem; margin-bottom: 10px;">為呼應今日的質感與藝文行程，為您推薦以下 3 個銀座購物地點：</p>
+                    <ul class="options-list">
+                        <li>
+                            <strong>1. 銀座 伊東屋 (G.Itoya)</strong>
+                            擁有百年歷史的文具殿堂，整棟 12 層樓充滿世界頂級文具、和紙與設計辦公小物，文具控與設計師的必逛聖地。
+                        </li>
+                        <li>
+                            <strong>2. 鳩居堂 (Kyukyodo)</strong>
+                            日本傳統工藝代表，專營頂級和紙、線香、書法用品與傳統明信片，非常適合挑選高雅精緻的伴手禮。
+                        </li>
+                        <li>
+                            <strong>3. 銀座 Loft 或 東急手創館 (Tokyu Hands)</strong>
+                            如果你想尋找現代生活雜貨、高品質的戶外用品或是美妝小物，這裡能提供最全面、最新潮的日本生活設計選物。
+                        </li>
                     </ul>
-                    
                     <a href="https://www.google.com/maps/dir/?api=1&destination=銀座站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
 
-            <!-- 行程 5：歸途 -->
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-content">
                     <span class="time-badge">20:30 歸途</span>
-                    <h3 class="location-title">返回池袋</h3>
+                    <h3 class="location-title">晚餐後返回池袋</h3>
                     
-                    <div class="transport-box">
+                    <div class="info-box">
                         <strong>🚃 交通方式：</strong> 從銀座站搭乘東京地鐵丸之內線（直達池袋站）。<br>
                         <strong>🎫 票價：</strong> 210 日圓
                     </div>
 
                     <ul class="details-list">
-                        <li><strong>行程結語：</strong> 丸之內線不需轉車即可輕鬆回到池袋，為充實的東區藝文之旅劃下完美的句點。</li>
+                        <li><strong>行程結語：</strong> 晚上在銀座享用精緻晚餐後，搭乘丸之內線不需轉車即可輕鬆回到池袋，為充實的藝文之旅劃下句點。</li>
                     </ul>
-                    
                     <a href="https://www.google.com/maps/dir/?api=1&destination=池袋站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
 
         </div>
+
+        <div class="summary-box">
+            <h3>💳 交通費試算總結 (池袋出發回池袋)</h3>
+            <p style="font-size: 0.95rem; margin-bottom: 15px; color: #78350f;">本次行程完全可利用「東京地鐵 (Tokyo Metro)」完成移動，以下為方案比較：</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; max-width: 500px; margin: 0 auto;">
+                <div style="background: #fff; padding: 12px; border-radius: 6px; border-left: 4px solid #ef4444;">
+                    <strong>🔺 最高交通費方案 (單次刷西瓜卡/IC卡)：約 660 日圓</strong>
+                    <br><span style="font-size: 0.85rem; color: var(--text-light);">池袋→木場(250) + 清澄白河→銀座(200) + 銀座→池袋(210) = 660日圓。(若中途搭錯或混搭JR/都營線，費用可能逼近 800-900日圓)</span>
+                </div>
+                
+                <div style="background: #fff; padding: 12px; border-radius: 6px; border-left: 4px solid #10b981;">
+                    <strong>✅ 最低交通費方案 (購買一日券)：600 日圓</strong>
+                    <br><span style="font-size: 0.85rem; color: var(--text-light);">於地鐵售票機購買「東京地鐵 24小時券 (Tokyo Metro 24-hour Ticket)」。只要 600 日圓即可無限次搭乘，最省錢且不用擔心搭錯車！</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
