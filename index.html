@@ -3,364 +3,592 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>點線極簡：一日行程滾動導覽</title>
+    <title>點線極簡：東京分流同步計畫</title>
     <style>
-        /* 基礎重置與極簡色彩設定 */
+        /* =========================================
+           1. Design Tokens (極簡設計變數)
+           ========================================= */
         :root {
-            --bg-color: #000000;      /* 深邃黑底色 */
-            --text-color: #ffffff;    /* 純白文字 */
-            --text-muted: #666666;    /* 淺灰文字 (非當前時段) */
-            --accent-color: #ffffff;  /* 點線的主要顏色 (白色) */
-            --timeline-width: 250px;  /* 左側時間軸寬度 */
+            --bg-color: #050505;       /* 極致黑 */
+            --text-primary: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.5); /* 半透明文字 */
+            --line-color: rgba(255, 255, 255, 0.15);
+            --accent-color: #ffffff;
+            --timeline-width: 200px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            scrollbar-width: none; /* Firefox 隱藏滾動條 */
-        }
-
-        *::-webkit-scrollbar {
-            display: none; /* Chrome, Safari 隱藏滾動條 */
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.5;
-            overflow: hidden; /* 防止最外層滾動，滾動交由 main 容器處理 */
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow: hidden; /* 隱藏全局滾動，交由 main 處理 */
         }
 
-        /* 佈局架構：左右分格 */
-        .app-container {
+        /* 隱藏滾動條 */
+        .scroll-container {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        /* =========================================
+           2. Floating Selectors (頂部固定切換器)
+           ========================================= */
+        .selector-container {
+            position: fixed;
+            top: 40px;
+            right: 60px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid var(--line-color);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        /* 隱藏非當前階段的切換器 */
+        .selector-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-10px);
+            position: absolute; /* 避免佔據空間 */
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn:hover { color: var(--text-primary); }
+        .toggle-btn.active {
+            background: var(--text-primary);
+            color: var(--bg-color);
+        }
+
+        /* =========================================
+           3. Layout Architecture (左右佈局)
+           ========================================= */
+        .app-layout {
             display: flex;
             height: 100vh;
             width: 100vw;
         }
 
-        /* =========================================
-           左側：固定時間軸導覽列
-           ========================================= */
-        .timeline-sidebar {
+        /* 左側：時間軸 */
+        .sidebar {
             width: var(--timeline-width);
             height: 100vh;
-            position: sticky;
-            top: 0;
+            border-right: 1px solid var(--line-color);
             display: flex;
-            align-items: center; /* 垂直置中整個選單 */
-            padding: 0 40px;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            padding-left: 40px;
+            position: relative;
+            z-index: 50;
         }
 
         .timeline-nav {
             display: flex;
             flex-direction: column;
-            width: 100%;
             position: relative;
+            width: 100%;
         }
 
-        /* 連接時間點的細線 */
         .timeline-nav::before {
             content: '';
             position: absolute;
-            left: 0; /* 線的位置與點對齊 */
-            top: 15px;
-            bottom: 15px;
+            left: 3px;
+            top: 20px;
+            bottom: 20px;
             width: 1px;
-            background-color: var(--text-muted);
+            background-color: var(--line-color);
             z-index: 0;
         }
 
         .nav-item {
             position: relative;
-            padding: 20px 0 20px 30px;
+            padding: 24px 0 24px 30px;
             text-decoration: none;
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 300;
-            transition: all 0.3s ease;
-            z-index: 1;
-            cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
+            z-index: 1;
         }
 
-        /* 時間軸上的「點」 */
         .nav-item::before {
             content: '';
             position: absolute;
-            left: -4px; /* 調整點在線上的位置 */
+            left: -1px;
             width: 9px;
             height: 9px;
             background-color: var(--bg-color);
             border: 1px solid var(--text-muted);
             border-radius: 50%;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
-        /* 滑鼠懸停效果 */
-        .nav-item:hover {
-            color: var(--accent-color);
-        }
-        .nav-item:hover::before {
-            border-color: var(--accent-color);
-        }
+        .nav-item:hover { color: var(--text-primary); }
+        .nav-item:hover::before { border-color: var(--text-primary); }
 
-        /* 「目前所在時間段」的凸顯樣式 */
         .nav-item.active {
-            color: var(--accent-color);
-            font-size: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.4rem;
             font-weight: 500;
         }
 
         .nav-item.active::before {
             background-color: var(--accent-color);
             border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
             transform: scale(1.3);
         }
 
-
-        /* =========================================
-           右側：全螢幕行程內容區
-           ========================================= */
+        /* 右側：全螢幕滾動區 */
         .content-area {
             flex-grow: 1;
             height: 100vh;
-            overflow-y: scroll; /* 允許右側獨立滾動 */
-            scroll-snap-type: y mandatory; /* 開啟 CSS Scroll Snap，確保每次停在區塊頂端 */
-            scroll-behavior: smooth; /* 點擊導航時平滑滾動 */
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
         }
 
-        /* 每個行程畫面佔滿整個螢幕高度 */
         .section {
             height: 100vh;
             width: 100%;
-            scroll-snap-align: start; /* 滾動停止時對齊區塊頂部 */
-            display: flex;
-            flex-direction: column;
-            padding: 60px;
-            position: relative;
-        }
-
-        /* 內部內容的排版，呼應點線極簡風格 */
-        .section-header {
-            margin-bottom: 40px;
-        }
-
-        .section-time {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-        
-        /* 標題旁的小橫線裝飾 */
-        .section-time::after {
-            content: '';
-            display: inline-block;
-            width: 50px;
-            height: 1px;
-            background-color: var(--text-muted);
-            margin-left: 20px;
-        }
-
-        .section-title {
-            font-size: 3.5rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        /* 模擬流程圖的線條與點 (可選：在內容區增加裝飾) */
-        .process-graph {
-            flex-grow: 1;
+            scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: flex-start;
-            padding-left: 10px;
+            padding: 0 80px;
+            position: relative;
         }
 
-        .graph-node {
+        /* =========================================
+           4. Content Styling (內容與排版細節)
+           ========================================= */
+        .route-content {
+            display: none; /* 預設隱藏，由 JS 控制顯示 */
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* 透過 body 的 class 來控制當前顯示的路線 */
+        body.route-day-a .content-day-a { display: block; }
+        body.route-day-b .content-day-b { display: block; }
+        body.route-night-shop .content-night-shop { display: block; }
+        body.route-night-intro .content-night-intro { display: block; }
+        body.route-night-dug .content-night-dug { display: block; }
+
+        .time-header {
+            font-size: 1rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
+        }
+        
+        .time-header::after {
+            content: '';
+            display: inline-block;
+            width: 40px;
+            height: 1px;
+            background-color: var(--line-color);
+            margin-left: 20px;
         }
 
-        .node-circle {
-            width: 12px;
-            height: 12px;
-            border: 2px solid var(--accent-color);
-            border-radius: 50%;
-            margin-right: 20px;
-        }
-
-        .node-text {
-            font-size: 1.5rem;
+        .title {
+            font-size: 3rem;
             font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
         }
 
-        .graph-line {
-            width: 2px;
-            height: 40px;
-            background-color: var(--text-muted);
-            margin-left: 5px;
-            margin-top: -30px;
-            margin-bottom: 10px;
+        /* 資訊列 (交通、費用) */
+        .meta-info {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            border-left: 2px solid var(--line-color);
+            padding-left: 15px;
         }
 
+        /* 景點介紹 (依要求：縮小並半透明) */
+        .description {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
 
+        /* 導航按鈕 (極簡膠囊) */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 24px;
+            border: 1px solid var(--line-color);
+            border-radius: 50px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .nav-btn:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            border-color: var(--text-primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           5. Mobile Optimization (手機版優化)
+           ========================================= */
+        @media (max-width: 900px) {
+            .app-layout { flex-direction: column; }
+            
+            /* 手機版時間軸改為頂部橫向滑動 */
+            .sidebar {
+                width: 100vw;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--line-color);
+                padding: 10px 20px;
+            }
+            .timeline-nav { flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; }
+            .timeline-nav::before { display: none; }
+            .nav-item { padding: 10px 20px; scroll-snap-align: start; }
+            .nav-item::before { display: none; }
+            .nav-item.active { font-size: 1.1rem; border-bottom: 2px solid var(--accent-color); }
+
+            /* 切換器位置調整 */
+            .selector-container { top: 70px; right: 50%; transform: translateX(50%); width: max-content; }
+            .selector-container.hidden { transform: translate(50%, -10px); }
+
+            .section { padding: 0 30px; }
+            .title { font-size: 2rem; }
+        }
     </style>
 </head>
-<body>
+<body class="route-day-a route-night-shop">
 
-    <div class="app-container">
+    <div id="day-selector" class="selector-container">
+        <button class="toggle-btn active" onclick="setDayRoute('a', this)">清澄工藝線</button>
+        <button class="toggle-btn" onclick="setDayRoute('b', this)">村上文學線</button>
+    </div>
+
+    <div id="night-selector" class="selector-container hidden">
+        <button class="toggle-btn active" onclick="setNightRoute('shop', this)">質感購物</button>
+        <button class="toggle-btn" onclick="setNightRoute('intro', this)">Intro爵士</button>
+        <button class="toggle-btn" onclick="setNightRoute('dug', this)">DUG爵士</button>
+    </div>
+
+    <div class="app-layout">
         
-        <nav class="timeline-sidebar">
+        <nav class="sidebar scroll-container">
             <div class="timeline-nav">
-                <a href="#time-0900" class="nav-item active">09:00</a>
-                <a href="#time-1130" class="nav-item">11:30</a>
-                <a href="#time-1400" class="nav-item">14:00</a>
-                <a href="#time-1800" class="nav-item">18:00</a>
-                <a href="#time-2100" class="nav-item">21:00</a>
+                <a href="#time-10" class="nav-item active">10:00</a>
+                <a href="#time-11" class="nav-item">11:00</a>
+                <a href="#time-13" class="nav-item">13:30</a>
+                <a href="#time-15" class="nav-item">15:00</a>
+                <a href="#time-18" class="nav-item">18:00</a>
+                <a href="#time-22" class="nav-item">22:00</a>
             </div>
         </nav>
 
-        <main class="content-area" id="scroll-container">
+        <main class="content-area scroll-container" id="scroll-area">
             
-            <section id="time-0900" class="section">
-                <header class="section-header">
-                    <div class="section-time">09:00 START</div>
-                    <h2 class="section-title">晨間啟程與集合</h2>
-                </header>
-                <div class="process-graph">
-                    <div class="graph-node">
-                        <div class="node-circle"></div>
-                        <div class="node-text">車站出口集合</div>
+            <section id="time-10" class="section" data-phase="day">
+                <div class="route-content content-day-a">
+                    <div class="time-header">10:00 DEPARTURE</div>
+                    <h2 class="title">木場公園</h2>
+                    <div class="meta-info">
+                        <span>🚃 有樂町線轉東西線 ➔ 木場站</span>
+                        <span>🎟️ 250 日圓</span>
                     </div>
-                    <div class="graph-line"></div>
-                    <div class="graph-node">
-                        <div class="node-circle" style="background-color: var(--accent-color);"></div>
-                        <div class="node-text">確認今日裝備與路線</div>
+                    <p class="description">
+                        早年為木材集散地，現已重劃為廣大的綠地公園。園內著名的白色大吊橋設計俐落，非常適合早晨散步、沉澱思緒，為一整天的質感之旅拉開序幕。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Kiba+Park+Tokyo" target="_blank" class="nav-btn">📍 導航至 木場公園</a>
+                    </div>
+                </div>
+
+                <div class="route-content content-day-b">
+                    <div class="time-header">10:00 DEPARTURE</div>
+                    <h2 class="title">早稻田 村上春樹圖書館</h2>
+                    <div class="meta-info">
+                        <span>🚃 山手線轉東西線 ➔ 早稻田站</span>
+                        <span>🎟️ 330 日圓</span>
+                    </div>
+                    <p class="description">
+                        由建築大師隈研吾親自操刀，絕美的木質階梯書架充滿溫潤感。館內展出大量初版書籍、《海邊的卡夫卡》原稿，並播放著村上私藏的黑膠唱片。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=The+Waseda+International+House+of+Literature" target="_blank" class="nav-btn">📍 導航至 圖書館</a>
                     </div>
                 </div>
             </section>
 
-            <section id="time-1130" class="section">
-                <header class="section-header">
-                    <div class="section-time">11:30 EXPLORE</div>
-                    <h2 class="section-title">展覽參訪與靈感探索</h2>
-                </header>
-                <div class="process-graph">
-                    <div class="graph-node">
-                        <div class="node-circle"></div>
-                        <div class="node-text">進入展區</div>
+            <section id="time-11" class="section" data-phase="day">
+                <div class="route-content content-day-a">
+                    <div class="time-header">11:00 EXPLORE</div>
+                    <h2 class="title">東京都現代美術館 (MOT)</h2>
+                    <div class="meta-info">
+                        <span>🚶 從木場公園步行 10-15 分</span>
+                        <span>🎟️ 常設展 500 日圓</span>
                     </div>
-                    <div class="graph-line"></div>
-                    <div class="graph-node">
-                        <div class="node-circle"></div>
-                        <div class="node-text">常設展導覽</div>
+                    <p class="description">
+                        建築師柳澤孝彥設計，大量使用鋼架與幾何線條，光影層次豐富。觀展之餘，也非常適合為平面設計或材質拼貼尋找深刻的空間啟發。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Museum+of+Contemporary+Art+Tokyo" target="_blank" class="nav-btn">📍 導航至 美術館</a>
+                    </div>
+                </div>
+
+                <div class="route-content content-day-b">
+                    <div class="time-header">11:00 EXPLORE</div>
+                    <h2 class="title">神宮外苑銀杏大道</h2>
+                    <div class="meta-info">
+                        <span>🚃 東西線轉半藏門線 ➔ 青山一丁目</span>
+                        <span>🎟️ 210 日圓</span>
+                    </div>
+                    <p class="description">
+                        「那一刻，沒有任何徵兆，我突然心想：對了，我也來寫小說看看吧。」漫步神宮球場外苑，回到村上決定成為作家的靈感發源地。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Meiji+Jingu+Gaien" target="_blank" class="nav-btn">📍 導航至 神宮外苑</a>
                     </div>
                 </div>
             </section>
 
-            <section id="time-1400" class="section">
-                <header class="section-header">
-                    <div class="section-time">14:00 BREAK</div>
-                    <h2 class="section-title">午餐與咖啡時光</h2>
-                </header>
-                 <div class="process-graph">
-                     <p style="font-size: 1.2rem; font-weight: 300; color: #aaa; max-width: 600px;">
-                        在極簡的空間中，享受單品咖啡的純粹風味。沉澱早上的思緒，準備下午的行程。
-                     </p>
-                 </div>
-            </section>
-
-            <section id="time-1800" class="section">
-                <header class="section-header">
-                    <div class="section-time">18:00 EVENING</div>
-                    <h2 class="section-title">工藝巡禮與採購</h2>
-                </header>
-                 <div class="process-graph">
-                    <div class="graph-node">
-                        <div class="node-circle"></div>
-                        <div class="node-text">抵達商圈</div>
+            <section id="time-13" class="section" data-phase="day">
+                <div class="route-content content-day-a">
+                    <div class="time-header">13:30 LUNCH</div>
+                    <h2 class="title">清澄白河 街區美食</h2>
+                    <div class="meta-info"><span>🚶 美術館周邊步行</span></div>
+                    <p class="description">
+                        不吃美術館餐廳，帶你走入周邊街區品嚐在地平價選擇。「深川宿」品嚐江戶時代漁夫的傳統料理蛤蜊飯；或是前往「滿留賀」享用道地的傳統炸蝦蕎麥麵。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Fukagawajuku+Tomioka+Hachiman" target="_blank" class="nav-btn">📍 導航 深川宿 (約1500円)</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Maruka+Soba+Kiyosumi+Shirakawa" target="_blank" class="nav-btn">📍 導航 滿留賀 (約1000円)</a>
                     </div>
-                    <div class="graph-line"></div>
-                    <div class="graph-node">
-                        <div class="node-circle" style="background-color: var(--accent-color);"></div>
-                        <div class="node-text">選物店尋寶</div>
+                </div>
+
+                <div class="route-content content-day-b">
+                    <div class="time-header">13:30 LUNCH</div>
+                    <h2 class="title">早稻田 學區記憶</h2>
+                    <div class="meta-info"><span>🚶 圖書館周邊步行</span></div>
+                    <p class="description">
+                        午餐可直接在圖書館附設的「橙子咖啡」享用村上春樹特製焙煎咖啡與簡餐；或是走入早稻田學區，尋找充滿青春氣息的平價豬排咖哩飯。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/d/u/0/embed?mid=1s5qLoY2CAyHine-HdIKiUa0K3LP5n_8&ehbc=2E312F0" target="_blank" class="nav-btn">📍 導航 橙子咖啡</a>
                     </div>
                 </div>
             </section>
 
-            <section id="time-2100" class="section">
-                <header class="section-header">
-                    <div class="section-time">21:00 END</div>
-                    <h2 class="section-title">晚餐與歸途</h2>
-                </header>
-                 <div class="process-graph">
-                     <p style="font-size: 1.2rem; font-weight: 300; color: #aaa; max-width: 600px;">
-                        整理今日的收穫，在安靜的夜色中踏上歸途。
-                     </p>
-                 </div>
+            <section id="time-15" class="section" data-phase="day">
+                <div class="route-content content-day-a">
+                    <div class="time-header">15:00 BREAK</div>
+                    <h2 class="title">藍瓶咖啡 旗艦店</h2>
+                    <div class="meta-info"><span>🚶 午餐後散步抵達</span></div>
+                    <p class="description">
+                        日本藍瓶一號店。挑高且充滿金屬機械質感的工業風烘豆廠空間，結合職人精準的手沖技術。推薦品嚐明亮果酸的單品手沖 (Single Origin Drip)。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="nav-btn">📍 導航至 藍瓶咖啡</a>
+                    </div>
+                </div>
+
+                <div class="route-content content-day-b">
+                    <div class="time-header">15:00 BREAK</div>
+                    <h2 class="title">千駄谷 Peter Cat 舊址</h2>
+                    <div class="meta-info"><span>🚶 從神宮外苑散步 15 分鐘</span></div>
+                    <p class="description">
+                        在成為專職作家之前，村上春樹與妻子曾在千駄谷經營爵士酒吧。漫步在這片寧靜街區，找家獨立咖啡館點杯黑咖啡，感受《1973年的彈珠玩具》的孤獨氛圍。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Sendagaya+Station" target="_blank" class="nav-btn">📍 導航至 千駄谷</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="time-18" class="section" data-phase="night">
+                
+                <div class="route-content content-night-shop">
+                    <div class="time-header">18:00 NIGHT SPLIT</div>
+                    <h2 class="title">工藝購物與天婦羅</h2>
+                    <div class="meta-info">
+                        <span>📍 藏前 / 日本橋商圈</span>
+                        <span>🎟️ 轉乘約 180 日圓</span>
+                    </div>
+                    <p class="description">
+                        把握店家打烊前，前往藏前體驗「Kakimori」自組筆記本，或至日本橋 Coredo 室町尋找和風生活道具。晚餐推薦至日本橋享用頂級江戶前天婦羅 (如金子半之助)。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=COREDO+Muromachi" target="_blank" class="nav-btn">📍 導航 日本橋</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Kakimori+Kuramae+Tokyo" target="_blank" class="nav-btn">📍 導航 藏前</a>
+                        <a href="https://www.google.com/maps/d/u/0/embed?mid=1s5qLoY2CAyHine-HdIKiUa0K3LP5n_8&ehbc=2E312F1" target="_blank" class="nav-btn">📍 晚餐 金子半之助</a>
+                    </div>
+                </div>
+
+                <div class="route-content content-night-intro">
+                    <div class="time-header">18:00 NIGHT SPLIT</div>
+                    <h2 class="title">高田馬場 Intro 爵士夜</h2>
+                    <div class="meta-info">
+                        <span>📍 高田馬場</span>
+                        <span>🎟️ 轉乘約 250 日圓</span>
+                    </div>
+                    <p class="description">
+                        晚餐先享用高田馬場著名的炸豬排，隨後潛入這間隱身地下的經典 Jam Session 聖地。極近距離感受在地樂手的即興魅力與爵士魂，入場費約 1-3 千日圓。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Jazz+Spot+Intro+Takadanobaba" target="_blank" class="nav-btn">📍 導航 Intro 酒吧</a>
+                        <a href="https://www.google.com/maps/d/u/0/embed?mid=1s5qLoY2CAyHine-HdIKiUa0K3LP5n_8&ehbc=2E312F2" target="_blank" class="nav-btn">📍 晚餐 推薦炸豬排</a>
+                    </div>
+                </div>
+
+                <div class="route-content content-night-dug">
+                    <div class="time-header">18:00 NIGHT SPLIT</div>
+                    <h2 class="title">新宿 DUG 挪威的森林</h2>
+                    <div class="meta-info">
+                        <span>📍 新宿靖國通</span>
+                        <span>🎟️ JR 轉乘約 150 日圓</span>
+                    </div>
+                    <p class="description">
+                        晚餐可於新宿思出橫丁體驗日式燒鳥串燒。飯後朝聖《挪威的森林》主角渡邊與綠子喝酒的真實老牌爵士酒吧。在紅磚地下室點杯威士忌，聽著黑膠完美收尾。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Jazz+Cafe+DUG+Shinjuku" target="_blank" class="nav-btn">📍 導航 Cafe DUG</a>
+                        <a href="https://www.google.com/maps/d/u/0/embed?mid=1s5qLoY2CAyHine-HdIKiUa0K3LP5n_8&ehbc=2E312F3" target="_blank" class="nav-btn">📍 晚餐 思出橫丁</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="time-22" class="section" data-phase="return">
+                <div class="route-content content-night-shop content-night-intro content-night-dug">
+                    <div class="time-header">22:00 RETURN</div>
+                    <h2 class="title">各自返回池袋會合</h2>
+                    <div class="meta-info"><span>💡 全體使用 IC 卡刷卡進站，不需購買一日券</span></div>
+                    <p class="description">
+                        結束充實的一天。無論你在何處，搭乘東京綿密的地鐵與 JR 網路，都能快速回到池袋住宿處：<br>
+                        • 從日本橋/藏前：搭地鐵轉丸之內線直達。<br>
+                        • 從高田馬場 (Intro)：搭乘 JR 山手線 4 分鐘直達。<br>
+                        • 從新宿 (DUG)：搭乘 JR 山手線 6 分鐘直達。
+                    </p>
+                    <div class="btn-group">
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Ikebukuro+Station" target="_blank" class="nav-btn" style="border-color:#fff;">📍 開啟導航回 池袋站</a>
+                    </div>
+                </div>
             </section>
 
         </main>
     </div>
 
     <script>
+        // --- 1. 頂部切換器邏輯 (控制 Body Class 達成全局狀態保留) ---
+        function setDayRoute(route, btnElement) {
+            // 更新按鈕視覺
+            document.querySelectorAll('#day-selector .toggle-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            // 更新 Body 狀態
+            document.body.classList.remove('route-day-a', 'route-day-b');
+            document.body.classList.add(`route-day-${route}`);
+        }
+
+        function setNightRoute(route, btnElement) {
+            // 更新按鈕視覺
+            document.querySelectorAll('#night-selector .toggle-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            // 更新 Body 狀態
+            document.body.classList.remove('route-night-shop', 'route-night-intro', 'route-night-dug');
+            document.body.classList.add(`route-night-${route}`);
+        }
+
+        // --- 2. 滾動偵測與時間軸同步 (Intersection Observer) ---
         document.addEventListener("DOMContentLoaded", () => {
             const sections = document.querySelectorAll(".section");
             const navItems = document.querySelectorAll(".nav-item");
-            const scrollContainer = document.getElementById("scroll-container");
+            const scrollArea = document.getElementById("scroll-area");
+            
+            const daySelector = document.getElementById("day-selector");
+            const nightSelector = document.getElementById("night-selector");
 
-            // 1. Intersection Observer 邏輯：監聽哪個 section 進入畫面
             const observerOptions = {
-                root: scrollContainer, // 指定滾動容器
-                rootMargin: "0px",
-                threshold: 0.5 // 當 section 至少有 50% 進入容器畫面時觸發
+                root: scrollArea,
+                rootMargin: "-20% 0px -50% 0px", // 提早觸發
+                threshold: 0
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // 取得當前進入畫面的 section ID
-                        const currentId = entry.target.getAttribute("id");
-                        
-                        // 移除所有選單的 active 狀態
+                        // 1. 同步左側時間軸
+                        const id = entry.target.getAttribute("id");
                         navItems.forEach(item => item.classList.remove("active"));
-                        
-                        // 找到對應的 a 連結，並加上 active 狀態
-                        const activeLink = document.querySelector(`.nav-item[href="#${currentId}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add("active");
+                        const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
+                        if (activeLink) activeLink.classList.add("active");
+
+                        // 2. 智能切換頂部選項 (判斷是在白天還是晚上)
+                        const phase = entry.target.getAttribute("data-phase");
+                        if (phase === "day") {
+                            daySelector.classList.remove("hidden");
+                            nightSelector.classList.add("hidden");
+                        } else if (phase === "night") {
+                            daySelector.classList.add("hidden");
+                            nightSelector.classList.remove("hidden");
+                        } else {
+                            // return phase (歸途)，隱藏所有選擇器保持畫面乾淨
+                            daySelector.classList.add("hidden");
+                            nightSelector.classList.add("hidden");
                         }
                     }
                 });
             }, observerOptions);
 
-            // 開始監聽所有的 section
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            sections.forEach(section => observer.observe(section));
 
-            // 2. 點擊導航時的平滑滾動修正 (可選，因 CSS scroll-behavior: smooth 已處理大部分)
-            // 這裡確保點擊連結時，會平滑過渡而不會產生突兀的跳轉
+            // 左側點擊平滑滾動修正
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href').substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
                 });
             });
         });
