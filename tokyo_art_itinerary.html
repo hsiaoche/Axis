@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東京東區藝文與質感生活一日遊</title>
+    <style>
+        :root {
+            --primary-color: #1e293b; /* 深石板藍 */
+            --accent-color: #c29b68;  /* 復古黃銅/金屬色 */
+            --bg-color: #f8fafc;      /* 極簡明亮灰白 */
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 0;
+        }
+
+        /* Header 樣式 */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* 主要內容區 */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* 路線簡述 */
+        .overview {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .overview h2 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        /* 時間軸樣式 */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        /* 時間軸圓點 */
+        .timeline-dot {
+            position: absolute;
+            left: -30px;
+            top: 6px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 3px solid var(--accent-color);
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            background-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(194, 155, 104, 0.2);
+        }
+
+        /* 行程卡片 */
+        .timeline-content {
+            background-color: var(--card-bg);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .time-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 3px 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .location-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .details-list {
+            list-style-type: none;
+        }
+
+        .details-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        .details-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .highlight-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        /* 頁尾 */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            background-color: #ffffff;
+            margin-top: 60px;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                margin: 20px auto;
+            }
+            .timeline-content {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>東京東區藝文與質感生活漫步</h1>
+        <p>Kiba & Kiyosumi-Shirakawa One-Day Itinerary</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="overview">
+            <h2>行程概覽</h2>
+            <p style="color: var(--text-light); font-size: 0.95rem;">
+                這是一條專為喜愛工藝、現代藝術與精緻咖啡文化設計的經典散步路線。從綠意盎然的木場公園出發，沿途沉澱思緒、汲取創作靈感，午後深入清澄白河的職人咖啡街區，傍晚再前往市區享受精緻的購物與晚餐體驗。
+            </p>
+        </div>
+
+        <div class="timeline">
+
+            <!-- 景點 1 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">10:30</span>
+                    <h3 class="location-title">啟程：木場站 ➔ 木場公園</h3>
+                    <ul class="details-list">
+                        <li><strong>交通方式：</strong> 搭乘東京地鐵東西線至「木場站」，出站後步行即可抵達園區。</li>
+                        <li><strong>漫步重點：</strong> 橫跨寬闊的園區大吊橋，感受昔日木材集散地轉型為都市綠洲的空間層次，非常適合慢跑或悠閒散步，開啟清爽的一天。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 景點 2 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">11:30</span>
+                    <h3 class="location-title">探索：東京都現代美術館 (MOT)</h3>
+                    <ul class="details-list">
+                        <li><strong>藝術體驗：</strong> 位於木場公園北端。館內極具工業與幾何線條感的現代建築結構，能為平面設計或三維立體模型的材質拼貼帶來深刻的空間啟發。</li>
+                        <li><strong>午餐推薦：</strong> 可於館內充滿設計感的餐廳「100 Spoons」享用午餐，或在咖啡廳選擇精緻輕食，保持下午行程的輕快節奏。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 景點 3 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">15:30</span>
+                    <h3 class="location-title">休憩：藍瓶咖啡 清澄白河旗艦店</h3>
+                    <ul class="details-list">
+                        <li><strong>咖啡工藝：</strong> 從美術館步行約 10-15 分鐘。作為日本一號旗艦店，挑高且充滿金屬機械質感的工業風烘豆廠空間，結合職人精準的手沖技術，提供極致的感官享受。</li>
+                        <li><strong>午後小憩：</strong> 點一杯高水準的單品濾泡咖啡，在濃郁的烘焙香氣中整理早上的靈感。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 景點 4 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">17:00</span>
+                    <h3 class="location-title">轉乘：前往日本橋或銀座購物</h3>
+                    <ul class="details-list">
+                        <li><strong>動線考量：</strong> 清澄白河在地的獨立工坊與風格小店大多於 17:00-18:00 打烊。此時建議由「清澄白河站」搭乘半藏門線前往「三越前站」（日本橋）或轉往「銀座」。</li>
+                        <li><strong>精選購物：</strong> 走訪歷史悠久的頂級文具老店、百年工藝選物店及當代旗艦百貨，實踐「買得好，用得久」的高品質消費理念。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 景點 5 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">19:00</span>
+                    <h3 class="location-title">晚餐：講究素材的細緻體驗</h3>
+                    <ul class="details-list">
+                        <li><strong>美食饗宴：</strong> 選擇市區內專注於呈現食材本味的壽司、天婦羅專門店，或是氣氛沉穩的和食割烹，在優雅寧靜的環境中為充實的藝文一日遊劃下完美句點。</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Tokyo Art & Craft Walk. Designed for Travel Enthusiasts.</p>
+    </footer>
+
+</body>
+</html>
