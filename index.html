@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東京東區藝文與質感生活一日遊</title>
+    <title>東京東區藝文漫步：從池袋出發的一日提案</title>
     <style>
         :root {
-            --primary-color: #1e293b; /* 深石板藍 */
-            --accent-color: #c29b68;  /* 復古黃銅/金屬色 */
-            --bg-color: #f8fafc;      /* 極簡明亮灰白 */
+            --primary-color: #1e293b; 
+            --accent-color: #c29b68;  
+            --bg-color: #f8fafc;      
             --card-bg: #ffffff;
             --text-color: #334155;
             --text-light: #64748b;
             --border-color: #e2e8f0;
             --btn-hover: #f1f5f9;
+            --transport-bg: #f1f5f9;
         }
 
         * {
@@ -29,11 +30,10 @@
             line-height: 1.7;
         }
 
-        /* 標題區塊 */
         header {
             background: linear-gradient(135deg, var(--primary-color) 0%, #0f172a 100%);
             color: #ffffff;
-            padding: 40px 20px;
+            padding: 50px 20px;
             text-align: center;
             position: relative;
         }
@@ -51,7 +51,7 @@
         header h1 {
             font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         header p {
@@ -61,81 +61,15 @@
             letter-spacing: 1px;
         }
 
-        /* 置頂分頁選單 */
-        .tab-wrapper {
-            position: sticky;
-            top: 0;
-            background-color: rgba(248, 250, 252, 0.95);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .tab-container {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-        }
-
-        .tab-button {
-            background: none;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .tab-button:hover {
-            background-color: var(--btn-hover);
-        }
-
-        .tab-button.active {
-            color: var(--primary-color);
-        }
-
-        .tab-button.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--accent-color);
-        }
-
-        /* 內容區塊 */
         .container {
             max-width: 800px;
-            margin: 30px auto;
+            margin: 40px auto;
             padding: 0 20px;
         }
 
-        .tab-content {
-            display: none; 
-        }
-
-        .tab-content.active {
-            display: block; 
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 時間軸設計 */
         .timeline {
             position: relative;
             padding-left: 30px;
-            margin-top: 10px;
         }
 
         .timeline::before {
@@ -169,7 +103,7 @@
             background-color: var(--card-bg);
             padding: 24px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             border: 1px solid var(--border-color);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -183,19 +117,62 @@
             display: inline-block;
             background-color: var(--primary-color);
             color: #ffffff;
-            padding: 3px 12px;
-            font-size: 0.85rem;
+            padding: 4px 12px;
+            font-size: 0.9rem;
             font-weight: 600;
             border-radius: 20px;
             margin-bottom: 12px;
         }
 
-        /* 導航按鈕 */
+        .location-title {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        /* 交通資訊區塊 */
+        .transport-box {
+            background-color: var(--transport-bg);
+            border-left: 4px solid var(--text-light);
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            border-radius: 0 6px 6px 0;
+            color: var(--primary-color);
+        }
+        
+        .transport-box strong {
+            color: var(--text-color);
+        }
+
+        /* 景點細節清單 */
+        .details-list {
+            list-style-type: none;
+            margin-bottom: 15px;
+        }
+
+        .details-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .details-list li::before {
+            content: "✦";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
         .nav-link {
             display: inline-flex;
             align-items: center;
-            margin-top: 15px;
-            padding: 10px 18px;
+            margin-top: 5px;
+            padding: 8px 16px;
             background-color: var(--primary-color);
             color: #ffffff;
             text-decoration: none;
@@ -203,7 +180,6 @@
             font-weight: 600;
             border-radius: 20px;
             transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .nav-link:hover {
@@ -214,22 +190,12 @@
             transform: scale(0.98);
         }
 
-        /* 嵌入地圖的容器樣式 */
-        .map-container {
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border-color);
-            background-color: #ffffff;
-        }
-
         footer {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-light);
             font-size: 0.85rem;
-            margin-top: 40px;
+            margin-top: 20px;
             border-top: 1px solid var(--border-color);
         }
     </style>
@@ -237,92 +203,125 @@
 <body>
 
     <header>
-        <h1>東京東區藝文與質感生活漫步</h1>
-        <p>Kiba & Kiyosumi-Shirakawa Walk</p>
+        <h1>東京東區藝文與質感生活一日遊</h1>
+        <p>從池袋出發：木場 ➔ 清澄白河 ➔ 銀座 ➔ 池袋</p>
     </header>
-
-    <div class="tab-wrapper">
-        <div class="tab-container">
-            <button class="tab-button active" onclick="switchTab('timeline-tab')">行程總覽</button>
-            <button class="tab-button" onclick="switchTab('map-tab')">地圖導覽</button>
-        </div>
-    </div>
 
     <div class="container">
         
-        <div id="timeline-tab" class="tab-content active">
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <span class="time-badge">10:30</span>
-                        <h3 style="color: var(--primary-color); margin-bottom: 8px;">啟程：木場公園</h3>
-                        <p style="color: var(--text-color); font-size: 0.95rem;">從木場站出發，橫跨寬闊的園區大吊橋，感受昔日木材集散地轉型為都市綠洲的空間層次，為一整天的藝文之旅沉澱思緒。</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=木場公園" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+        <div class="timeline">
+            <!-- 行程 1：出發至木場公園 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">10:00 出發</span>
+                    <h3 class="location-title">木場公園：都會中的開闊綠洲</h3>
+                    
+                    <div class="transport-box">
+                        <strong>🚃 交通方式：</strong> 搭乘東京地鐵有樂町線（池袋 ➔ 飯田橋），轉乘東西線（飯田橋 ➔ 木場站）。<br>
+                        <strong>🎫 票價：</strong> 250 日圓
                     </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <span class="time-badge">11:30</span>
-                        <h3 style="color: var(--primary-color); margin-bottom: 8px;">探索：東京都現代美術館</h3>
-                        <p style="color: var(--text-color); font-size: 0.95rem;">極具工業與幾何線條感的現代建築結構。觀展之餘，也非常適合為平面設計或材質拼貼尋找深刻的空間啟發。午餐可於附設餐廳享用。</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=東京都現代美術館" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <span class="time-badge">15:30</span>
-                        <h3 style="color: var(--primary-color); margin-bottom: 8px;">休憩：藍瓶咖啡 清澄白河旗艦店</h3>
-                        <p style="color: var(--text-color); font-size: 0.95rem;">日本藍瓶一號店。挑高且充滿金屬機械質感的工業風烘豆廠空間，結合職人精準的手沖技術，享受極致的感官體驗。</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=藍瓶咖啡清澄白河旗艦店" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <span class="time-badge">17:00</span>
-                        <h3 style="color: var(--primary-color); margin-bottom: 8px;">傍晚：銀座 / 日本橋 購物與晚餐</h3>
-                        <p style="color: var(--text-color); font-size: 0.95rem;">搭乘地鐵轉往市區，走訪頂級文具老店與工藝選物店。晚餐挑選專注呈現食材本味的壽司或割烹，完美結束這一天。</p>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=銀座" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
-                    </div>
+                    
+                    <ul class="details-list">
+                        <li><strong>景點特色：</strong> 早年為木材集散地，現已重劃為腹地廣大的綠地公園。園內著名的白色大吊橋設計俐落，非常適合散步、沉澱思緒，感受遠離新宿、池袋等鬧區的下町寧靜感。</li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=木場公園" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
                 </div>
             </div>
-        </div>
 
-        <div id="map-tab" class="tab-content">
-            <div class="map-container">
-                <iframe 
-                    src="https://www.google.com/maps/d/u/0/embed?mid=1s5qLoY2CAyHine-HdIKiUa0K3LP5n_8&ehbc=2E312F" 
-                    width="100%" 
-                    height="500" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
+            <!-- 行程 2：東京都現代美術館 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">11:00 藝術探索</span>
+                    <h3 class="location-title">東京都現代美術館 (MOT)</h3>
+                    
+                    <div class="transport-box">
+                        <strong>🚶 交通方式：</strong> 沿著木場公園內部步道往北步行約 10-15 分鐘。<br>
+                        <strong>🎫 票價：</strong> 0 日圓
+                    </div>
+
+                    <ul class="details-list">
+                        <li><strong>景點特色：</strong> 日本最具代表性的現代美術館之一，由建築師柳澤孝彥設計。大量使用鋼架與幾何線條，光影層次豐富，本身就是極佳的空間設計範本。</li>
+                        <li><strong>常設展 (MOT Collection)：</strong> 展示戰後日本與國際當代藝術作品，館藏超過 5500 件，每年會進行 3-4 次輪替展出，涵蓋普普藝術、極簡主義到現代前衛媒材。</li>
+                        <li><strong>常設展票價：</strong> 一般成人 500 日圓 / 大學生與專門學校生 400 日圓 / 高中生及 65 歲以上 250 日圓。</li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=東京都現代美術館" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                </div>
             </div>
-        </div>
 
+            <!-- 行程 3：藍瓶咖啡 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">15:00 質感午後</span>
+                    <h3 class="location-title">藍瓶咖啡 清澄白河旗艦店</h3>
+                    
+                    <div class="transport-box">
+                        <strong>🚶 交通方式：</strong> 從美術館出發，穿過寧靜的住宅區步行約 15 分鐘。<br>
+                        <strong>🎫 票價：</strong> 0 日圓
+                    </div>
+
+                    <ul class="details-list">
+                        <li><strong>景點特色：</strong> 這是 Blue Bottle 進軍日本的一號店，由舊倉庫改建而成。挑高的廠房空間內放置了大型烘豆機具，充滿濃厚工業風。能在這裡親眼觀賞職人精準的手沖工藝。</li>
+                        <li><strong>推薦飲品：</strong> 
+                            <br>- <strong>單品手沖咖啡 (Single Origin Drip)：</strong> 約 750 日圓起，能品嚐到當季嚴選豆的明亮果酸與層次。
+                            <br>- <strong>紐澳良冰咖啡 (NOLA)：</strong> 約 650 日圓，加入菊苣根烘焙並混合有機蔗糖與牛奶，口感醇厚且帶有獨特香氣。
+                        </li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                </div>
+            </div>
+
+            <!-- 行程 4：銀座逛街與晚餐 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">17:00 傍晚購物</span>
+                    <h3 class="location-title">銀座：頂級選物與晚餐饗宴</h3>
+                    
+                    <div class="transport-box">
+                        <strong>🚃 交通方式：</strong> 步行至清澄白河站，搭乘東京地鐵半藏門線（清澄白河 ➔ 大手町），轉乘丸之內線（大手町 ➔ 銀座）。<br>
+                        <strong>🎫 票價：</strong> 200 日圓
+                    </div>
+
+                    <ul class="details-list">
+                        <li><strong>景點特色：</strong> 清澄白河一帶店舖較早打烊。轉往銀座可造訪如伊東屋 (Itoya) 等頂級文具老店，或是 DOVER STREET MARKET 等高端選物店。晚餐則有豐富的壽司、天婦羅與和食割烹可供選擇，延續高質感的行程氛圍。</li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=銀座站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                </div>
+            </div>
+
+            <!-- 行程 5：歸途 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="time-badge">20:30 歸途</span>
+                    <h3 class="location-title">返回池袋</h3>
+                    
+                    <div class="transport-box">
+                        <strong>🚃 交通方式：</strong> 從銀座站搭乘東京地鐵丸之內線（直達池袋站）。<br>
+                        <strong>🎫 票價：</strong> 210 日圓
+                    </div>
+
+                    <ul class="details-list">
+                        <li><strong>行程結語：</strong> 丸之內線不需轉車即可輕鬆回到池袋，為充實的東區藝文之旅劃下完美的句點。</li>
+                    </ul>
+                    
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=池袋站" target="_blank" class="nav-link">📍 從我的位置導航至此</a>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <footer>
         <p>© 2026 Tokyo Art & Craft Walk. Designed for Travel Enthusiasts.</p>
     </footer>
 
-    <script>
-        function switchTab(tabId) {
-            // 隱藏所有內容與拔除按鈕啟動狀態
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
-            
-            // 顯示當前點擊的內容與按鈕狀態
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-    </script>
 </body>
 </html>
