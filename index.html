@@ -35,7 +35,7 @@
         .scroll-container::-webkit-scrollbar { display: none; }
 
         /* =========================================
-           2. 系統狀態與微文案
+           2. 系統狀態與浮動控制區
            ========================================= */
         #loader {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -52,11 +52,11 @@
             margin-top: 15px; display: none;
         }
 
-        /* 浮動切換器 */
+        /* 路線切換器 (Pill Toggle) */
         .selector-container {
             position: fixed; top: 40px; right: 60px; z-index: 100;
             display: flex; gap: 10px;
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             padding: 6px; border-radius: 40px; border: 1px solid var(--line-color);
             transition: opacity 0.3s, transform 0.3s;
@@ -76,7 +76,7 @@
         .toggle-btn:hover { color: var(--text-primary); }
         .toggle-btn.active { background: var(--text-primary); color: var(--bg-color); }
 
-        /* 呼吸燈與微文案 */
+        /* 右下角呼吸燈 */
         .anchor-wrapper {
             position: fixed; bottom: 40px; right: 60px; z-index: 100;
             display: flex; align-items: center; gap: 15px;
@@ -148,11 +148,16 @@
         .content-area {
             flex-grow: 1; height: 100vh; overflow-y: scroll; 
             scroll-snap-type: y mandatory; scroll-behavior: smooth;
+            
+            /* 🚀 關鍵 UX 修復：頂部漸層遮罩 (防止文字重疊按鈕) */
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 70px, black 110px, black 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, transparent 70px, black 110px, black 100%);
         }
 
         .section {
             height: 100vh; width: 100%; flex-shrink: 0; 
-            scroll-snap-align: center; scroll-snap-stop: always; 
+            scroll-snap-align: center; /* 🚀 完美置中磁吸 */
+            scroll-snap-stop: always; 
             display: flex; align-items: center; padding: 0 80px; position: relative;
         }
 
@@ -165,9 +170,9 @@
            ========================================= */
         .route-content {
             display: none; animation: fadeIn 0.4s ease forwards;
-            overflow-y: auto; padding-right: 15px; width: 100%;
+            /* 🚀 移除了 overflow-y: auto，禁止卡片內部亂滾動導致跑版 */
+            padding-right: 15px; width: 100%;
         }
-        .route-content::-webkit-scrollbar { display: none; }
 
         body[data-active-route="a"] .content-route-a { display: block; }
         body[data-active-route="b"] .content-route-b { display: block; }
@@ -245,11 +250,12 @@
         }
 
         @media (max-width: 899px) {
-            .app-layout { flex-direction: row; }
+            .app-layout { flex-direction: row; } /* 保持左右佈局 */
             
             .sidebar { 
                 width: var(--timeline-mobile-width); height: 100vh; padding: 0; 
-                justify-content: center;
+                justify-content: center; /* 讓時間軸固定在螢幕垂直中間 */
+                border-right: none; /* 🚀 移除右側垂直線，完全還原手稿 */
             }
             
             .timeline-nav { flex-direction: column; gap: 30px; align-items: flex-start; }
@@ -268,11 +274,10 @@
             }
             .selector-container.hidden { transform: translateY(-10px); }
 
-            /* 解決重疊跑版與對齊修正 */
             .section { 
-                padding: 80px 30px 40px 25px; 
-                align-items: flex-start; /* 手機版改為靠上對齊 */
-                scroll-snap-align: start; /* 磁吸點同步改為頂部起算 */
+                padding: 0 30px; /* 重置 padding，交給 flex 自動置中 */
+                align-items: center; /* 🚀 恢復完美置中 */
+                scroll-snap-align: center; /* 🚀 磁吸完美置中 */
             }
             .section-track { flex-direction: column; max-height: none; }
             
@@ -302,9 +307,10 @@
     </div>
 
     <main class="app-layout" id="app-layout">
-        <aside class="sidebar scroll-container">
+        <aside class="sidebar">
             <nav class="timeline-nav" id="timeline-nav" aria-label="時間軸導航"></nav>
         </aside>
+        
         <section class="content-area scroll-container" id="scroll-area">
             </section>
     </main>
@@ -366,6 +372,7 @@
                 if(route.overview) {
                     let metaHTML = route.overview.meta.map(m => `<span>${m}</span>`).join('');
                     
+                    // 生成 CSS 幾何流程圖
                     let flowHTML = route.overview.steps.map((step, idx, arr) => {
                         let node = `<div class="flow-node">${step}</div>`;
                         let arrow = idx < arr.length - 1 ? `<div class="flow-arrow"></div>` : '';
@@ -481,9 +488,10 @@
 
                         navItems.forEach(item => item.classList.remove("active"));
                         const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
+                        
                         if (activeLink) {
                             activeLink.classList.add("active");
-                            activeLink.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                            // 🚀 刪除這行惹禍的 scrollIntoView，讓時間軸乖乖待在原地，只移動亮點
                         }
 
                         if (phase === "day" || phase === "overview") {
