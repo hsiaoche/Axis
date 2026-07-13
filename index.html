@@ -14,7 +14,8 @@
             --text-muted: rgba(255, 255, 255, 0.4); 
             --line-color: rgba(255, 255, 255, 0.2);
             --accent-color: #ffffff;
-            --timeline-width: 220px;
+            --timeline-desktop-width: 220px;
+            --timeline-mobile-width: 90px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,19 +35,12 @@
         .scroll-container::-webkit-scrollbar { display: none; }
 
         /* =========================================
-           2. 系統狀態與微文案 (UX 升級)
+           2. 系統狀態與微文案
            ========================================= */
         #loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.85rem;
-            letter-spacing: 4px;
-            color: var(--text-muted);
-            z-index: 999;
-            transition: opacity 0.5s;
-            text-align: center;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 0.85rem; letter-spacing: 4px; color: var(--text-muted);
+            z-index: 999; transition: opacity 0.5s; text-align: center;
         }
 
         .error-msg { color: #ff5555; margin-bottom: 10px; }
@@ -58,7 +52,7 @@
             margin-top: 15px; display: none;
         }
 
-        /* 浮動按鈕區 */
+        /* 浮動切換器 */
         .selector-container {
             position: fixed; top: 40px; right: 60px; z-index: 100;
             display: flex; gap: 10px;
@@ -124,50 +118,42 @@
 
         /* 左側：水平線段時間軸 */
         .sidebar {
-            width: var(--timeline-width); height: 100vh;
+            width: var(--timeline-desktop-width); height: 100vh;
             display: flex; align-items: center; justify-content: center;
-            position: relative; z-index: 50;
+            position: relative; z-index: 50; border-right: 1px solid var(--line-color);
         }
 
         .timeline-nav {
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 20px; width: 100%;
         }
 
-        /* 平行線設計：文字在右，線條在左 */
         .nav-item {
-            text-decoration: none; color: var(--text-muted);
+            text-decoration: none; color: var(--text-muted); padding-left: 30px;
             font-size: 1rem; font-weight: 300; transition: all 0.3s;
-            display: flex; align-items: center; gap: 12px;
+            display: flex; align-items: center; gap: 12px; position: relative;
         }
 
         .nav-item::before {
-            content: ''; width: 15px; height: 1px;
+            content: ''; position: absolute; left: 0; width: 15px; height: 1px;
             background-color: var(--line-color); transition: all 0.3s ease;
         }
 
         .nav-item:hover { color: var(--text-primary); }
-        .nav-item:hover::before { width: 25px; background-color: var(--text-muted); }
+        .nav-item:hover::before { width: 20px; background-color: var(--text-muted); }
 
-        .nav-item.active {
-            color: var(--text-primary); font-size: 1.2rem; font-weight: 500;
-        }
-        .nav-item.active::before {
-            width: 40px; height: 2px; background-color: var(--accent-color);
-        }
+        .nav-item.active { color: var(--text-primary); font-size: 1.2rem; font-weight: 500; }
+        .nav-item.active::before { width: 30px; height: 2px; background-color: var(--accent-color); }
 
-        /* 右側：全螢幕滾動區 (嚴格對齊設定) */
+        /* 右側：全螢幕滾動區 */
         .content-area {
             flex-grow: 1; height: 100vh; overflow-y: scroll; 
             scroll-snap-type: y mandatory; scroll-behavior: smooth;
         }
 
         .section {
-            height: 100vh; width: 100%;
-            flex-shrink: 0; /* 確保不被壓縮 */
-            scroll-snap-align: center; 
-            scroll-snap-stop: always; /* 強制在每個區塊煞車 */
-            display: flex; align-items: center; 
-            padding: 0 80px; position: relative;
+            height: 100vh; width: 100%; flex-shrink: 0; 
+            scroll-snap-align: center; scroll-snap-stop: always; 
+            display: flex; align-items: center; padding: 0 80px; position: relative;
         }
 
         .section-track {
@@ -179,7 +165,7 @@
            ========================================= */
         .route-content {
             display: none; animation: fadeIn 0.4s ease forwards;
-            overflow-y: auto; padding-right: 15px;
+            overflow-y: auto; padding-right: 15px; width: 100%;
         }
         .route-content::-webkit-scrollbar { display: none; }
 
@@ -204,7 +190,6 @@
             margin-bottom: 30px; line-height: 1.2;
         }
 
-        /* CSS 幾何流程圖 */
         .flow-diagram {
             display: flex; align-items: center; flex-wrap: wrap;
             gap: 12px; margin-bottom: 40px;
@@ -216,9 +201,7 @@
             border-radius: 30px; color: var(--text-primary);
         }
 
-        .flow-arrow {
-            width: 20px; height: 1px; background-color: var(--line-color);
-        }
+        .flow-arrow { width: 20px; height: 1px; background-color: var(--line-color); }
 
         .meta-info {
             font-size: 0.85rem; color: #888; margin-bottom: 24px;
@@ -241,9 +224,7 @@
             font-size: 0.85rem; letter-spacing: 1px; transition: all 0.3s;
         }
 
-        .nav-btn:hover {
-            background: var(--text-primary); color: var(--bg-color); border-color: var(--text-primary);
-        }
+        .nav-btn:hover { background: var(--text-primary); color: var(--bg-color); border-color: var(--text-primary); }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -251,7 +232,7 @@
         }
 
         /* =========================================
-           5. 響應式佈局
+           5. 響應式佈局 (還原手稿：強制左側時間軸)
            ========================================= */
         @media (min-width: 900px) {
             .selector-container { display: none !important; }
@@ -264,27 +245,44 @@
         }
 
         @media (max-width: 899px) {
-            .app-layout { flex-direction: column; }
-            .sidebar { width: 100vw; height: auto; padding: 20px 20px 10px 20px; }
+            .app-layout { flex-direction: row; }
             
-            /* 手機版時間軸改回頂部，但保留平行線邏輯 */
-            .timeline-nav { flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; gap: 15px; }
-            .nav-item { flex-direction: column; gap: 8px; padding: 10px; scroll-snap-align: start; }
-            .nav-item::before { width: 1px; height: 15px; }
-            .nav-item:hover::before { width: 1px; height: 25px; }
-            .nav-item.active::before { width: 2px; height: 30px; }
+            .sidebar { 
+                width: var(--timeline-mobile-width); height: 100vh; padding: 0; 
+                justify-content: center;
+            }
+            
+            .timeline-nav { flex-direction: column; gap: 30px; align-items: flex-start; }
+            
+            .nav-item { 
+                padding: 10px 0 10px 20px; font-size: 0.85rem; width: 100%;
+            }
+            .nav-item::before { width: 10px; height: 1px; }
+            .nav-item:hover::before { width: 15px; }
+            .nav-item.active { font-size: 1.1rem; }
+            .nav-item.active::before { width: 20px; height: 2px; }
 
-            .selector-container { top: 90px; right: 50%; transform: translateX(50%); width: max-content; }
-            .selector-container.hidden { transform: translate(50%, -10px); }
+            .selector-container { 
+                top: 20px; right: 20px; transform: none; width: max-content; 
+                background: rgba(10, 10, 10, 0.95);
+            }
+            .selector-container.hidden { transform: translateY(-10px); }
 
-            .anchor-wrapper { bottom: 30px; right: 30px; }
-            .micro-copy { display: none; } /* 手機空間小，隱藏微文案 */
+            /* 解決重疊跑版與對齊修正 */
+            .section { 
+                padding: 80px 30px 40px 25px; 
+                align-items: flex-start; /* 手機版改為靠上對齊 */
+                scroll-snap-align: start; /* 磁吸點同步改為頂部起算 */
+            }
+            .section-track { flex-direction: column; max-height: none; }
+            
+            .title { font-size: 2rem; margin-bottom: 15px; }
+            .description { max-width: 100%; font-size: 0.9rem; margin-bottom: 25px; }
+            
+            .anchor-wrapper { bottom: 20px; right: 20px; }
+            .micro-copy { display: none; } 
             .time-anchor-btn { width: 45px; height: 45px; }
-
-            .section { padding: 0 40px; }
-            .section-track { flex-direction: column; }
-            .title { font-size: 2.2rem; }
-            .description { max-width: 100%; }
+            .time-header { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -357,7 +355,6 @@
             const navContainer = document.getElementById('timeline-nav');
             const scrollArea = document.getElementById('scroll-area');
             
-            // 清空避免重複渲染
             navContainer.innerHTML = '';
             scrollArea.innerHTML = '';
 
@@ -369,7 +366,6 @@
                 if(route.overview) {
                     let metaHTML = route.overview.meta.map(m => `<span>${m}</span>`).join('');
                     
-                    // 生成 CSS 幾何流程圖
                     let flowHTML = route.overview.steps.map((step, idx, arr) => {
                         let node = `<div class="flow-node">${step}</div>`;
                         let arrow = idx < arr.length - 1 ? `<div class="flow-arrow"></div>` : '';
@@ -470,7 +466,6 @@
             const nightSelector = document.getElementById("night-selector");
             const syncHint = document.getElementById("sync-hint");
 
-            // 淡出微文案邏輯
             scrollArea.addEventListener('scroll', () => {
                 if(!state.hasScrolled) {
                     syncHint.style.opacity = '0';
@@ -531,7 +526,7 @@
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.scrollIntoView({ behavior: 'smooth' });
-                document.getElementById("sync-hint").style.opacity = '0'; // 點擊後隱藏提示
+                document.getElementById("sync-hint").style.opacity = '0';
             }
         }
     </script>
