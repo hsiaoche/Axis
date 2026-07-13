@@ -12,7 +12,7 @@
             --bg-color: #050505;       
             --text-primary: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.4); 
-            --line-color: rgba(255, 255, 255, 0.15);
+            --line-color: rgba(255, 255, 255, 0.2);
             --accent-color: #ffffff;
             --timeline-width: 220px;
         }
@@ -36,7 +36,6 @@
         /* =========================================
            2. Floating Elements (浮動控制項)
            ========================================= */
-        /* 系統載入狀態 */
         #loader {
             position: fixed;
             top: 50%;
@@ -91,7 +90,7 @@
             color: var(--bg-color);
         }
 
-        /* 呼吸燈淨化處理 (純粹正圓) */
+        /* 呼吸燈 (純粹正圓) */
         .time-anchor-btn {
             position: fixed;
             bottom: 40px;
@@ -100,7 +99,7 @@
             height: 50px;
             border-radius: 50%;
             background-color: transparent;
-            border: none; /* 移除任何預設邊框，消除X細線 */
+            border: none; 
             outline: none;
             display: flex;
             align-items: center;
@@ -112,8 +111,8 @@
         .time-anchor-btn::after {
             content: '';
             display: block;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: var(--accent-color);
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255,255,255,0.8);
@@ -133,18 +132,17 @@
             display: flex;
             height: 100vh;
             width: 100vw;
-            opacity: 0; /* 預設隱藏，待 JSON 載入後淡入 */
+            opacity: 0; 
             transition: opacity 0.8s ease;
         }
 
-        /* 左側：時間軸 (Axis) */
+        /* 左側：水平線段時間軸 (依照手稿重構) */
         .sidebar {
             width: var(--timeline-width);
             height: 100vh;
-            border-right: 1px solid var(--line-color);
             display: flex;
             align-items: center;
-            padding-left: 50px;
+            padding-left: 60px;
             position: relative;
             z-index: 50;
         }
@@ -152,24 +150,12 @@
         .timeline-nav {
             display: flex;
             flex-direction: column;
-            position: relative;
             width: 100%;
-        }
-
-        .timeline-nav::before {
-            content: '';
-            position: absolute;
-            left: 3px;
-            top: 20px;
-            bottom: 20px;
-            width: 1px;
-            background-color: var(--line-color);
-            z-index: 0;
         }
 
         .nav-item {
             position: relative;
-            padding: 24px 0 24px 30px;
+            padding: 24px 0 24px 30px; /* 留出左側線段空間 */
             text-decoration: none;
             color: var(--text-muted);
             font-size: 1.1rem;
@@ -177,23 +163,21 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            z-index: 1;
         }
 
+        /* 水平線段 (Dashes) 取代原有的圓點與垂直線 */
         .nav-item::before {
             content: '';
             position: absolute;
-            left: -1px;
-            width: 9px;
-            height: 9px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--text-muted);
-            border-radius: 50%;
-            transition: all 0.3s;
+            left: 0;
+            width: 12px;
+            height: 1px;
+            background-color: var(--line-color);
+            transition: all 0.3s ease;
         }
 
         .nav-item:hover { color: var(--text-primary); }
-        .nav-item:hover::before { border-color: var(--text-primary); }
+        .nav-item:hover::before { width: 18px; background-color: var(--text-primary); }
 
         .nav-item.active {
             color: var(--text-primary);
@@ -202,17 +186,17 @@
         }
 
         .nav-item.active::before {
+            width: 24px;
+            height: 2px;
             background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-            transform: scale(1.3);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
         }
 
-        /* 右側：全螢幕滾動區 */
+        /* 右側：全螢幕滾動區 (除錯：完美置中磁吸) */
         .content-area {
             flex-grow: 1;
             height: 100vh;
-            overflow-y: scroll;
+            overflow-y: auto; 
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
         }
@@ -220,48 +204,46 @@
         .section {
             height: 100vh;
             width: 100%;
-            scroll-snap-align: start;
+            /* 修正為 center 確保上下完美對齊不跑版 */
+            scroll-snap-align: center; 
+            scroll-snap-stop: always;
             display: flex;
-            align-items: center;
+            align-items: center; 
             padding: 0 80px;
             position: relative;
         }
 
-        /* 內部軌道容器 (提供給電腦端並排使用) */
         .section-track {
             display: flex;
             width: 100%;
             gap: 60px;
-            max-height: 80vh;
+            max-height: 85vh;
         }
 
         /* =========================================
-           4. Content Styling (內容與排版細節)
+           4. Content Styling (內容與首頁排版)
            ========================================= */
         .route-content {
             display: none; 
             animation: fadeIn 0.4s ease forwards;
-            overflow-y: auto; /* 長文本獨立滾動 */
+            overflow-y: auto;
             padding-right: 15px;
         }
         
         .route-content::-webkit-scrollbar { display: none; }
 
-        /* 透過 body 屬性動態控制顯示狀態 (手機版專用) */
         body[data-active-route="a"] .content-route-a { display: block; }
         body[data-active-route="b"] .content-route-b { display: block; }
         body[data-active-route="shop"] .content-route-shop { display: block; }
         body[data-active-route="intro"] .content-route-intro { display: block; }
         body[data-active-route="dug"] .content-route-dug { display: block; }
-        
-        /* 交集節點(Sync)不論選什麼路線都顯示 */
         .content-route-all { display: block !important; }
 
         .time-header {
             font-size: 0.9rem;
             color: var(--text-muted);
             letter-spacing: 3px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             text-transform: uppercase;
@@ -284,6 +266,18 @@
             line-height: 1.2;
         }
 
+        /* 總覽頁的純文字幾何流程圖 */
+        .flow-diagram {
+            font-family: monospace;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            white-space: pre-wrap; /* 保留 JSON 裡的換行排版 */
+            line-height: 1.5;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
         .meta-info {
             font-size: 0.85rem;
             color: #888;
@@ -302,6 +296,7 @@
             max-width: 500px;
             margin-bottom: 40px;
             line-height: 1.8;
+            white-space: pre-line;
         }
 
         .btn-group {
@@ -337,22 +332,19 @@
         }
 
         /* =========================================
-           5. 響應式佈局 (電腦端並排 vs 手機端)
+           5. 響應式佈局
            ========================================= */
-        
-        /* [電腦端] 上帝視角：多軌並排，隱藏切換器 */
         @media (min-width: 900px) {
             .selector-container { display: none !important; }
             .route-content {
-                display: block !important; /* 強制全部顯示 */
-                flex: 1; /* 均分欄位寬度 */
+                display: block !important; 
+                flex: 1; 
             }
             .content-route-all {
                 flex: 1 1 100%;
                 display: flex;
                 flex-direction: column;
             }
-            /* 交集節點橫向引導線 */
             .content-route-all .title::before {
                 content: '';
                 display: block;
@@ -363,18 +355,16 @@
             }
         }
 
-        /* [手機/平板端] 單軌切換 */
         @media (max-width: 899px) {
             .app-layout { flex-direction: column; }
             .sidebar {
                 width: 100vw;
                 height: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--line-color);
                 padding: 10px 20px;
             }
             .timeline-nav { flex-direction: row; overflow-x: auto; scroll-snap-type: x mandatory; }
-            .timeline-nav::before { display: none; }
+            
+            /* 手機版改回底部橫線對齊 */
             .nav-item { padding: 10px 20px; scroll-snap-align: start; }
             .nav-item::before { display: none; }
             .nav-item.active { border-bottom: 2px solid var(--accent-color); padding-bottom: 8px; }
@@ -410,15 +400,12 @@
     </div>
 
     <script>
-        // --- 核心狀態管理 ---
         const state = {
             dayRoute: sessionStorage.getItem('axisDayRoute') || 'a',
             nightRoute: sessionStorage.getItem('axisNightRoute') || 'shop'
         };
 
-        // --- 1. 初始化資料抓取 (Fetch JSON) ---
         document.addEventListener("DOMContentLoaded", () => {
-            // 強制加上時間戳記避免快取
             fetch(`data.json?v=${new Date().getTime()}`)
                 .then(response => {
                     if(!response.ok) throw new Error("JSON Fetch Failed");
@@ -440,35 +427,53 @@
                 });
         });
 
-        // --- 2. 介面渲染邏輯 (DOM Generation) ---
         function renderUI(data) {
-            // 渲染頂部切換按鈕
             renderSelectors('day-selector', data.config.dayRoutes, 'day');
             renderSelectors('night-selector', data.config.nightRoutes, 'night');
 
             const navContainer = document.getElementById('timeline-nav');
             const scrollArea = document.getElementById('scroll-area');
 
-            data.schedule.forEach((point, index) => {
-                // 渲染左側時間軸
-                const navHTML = `<a href="#${point.timeId}" class="nav-item ${index === 0 ? 'active' : ''}">${point.timeLabel}</a>`;
-                navContainer.insertAdjacentHTML('beforeend', navHTML);
+            // 1. 動態插入「路線首頁」 (Overview)
+            navContainer.insertAdjacentHTML('beforeend', `<a href="#time-overview" class="nav-item active">INFO</a>`);
+            
+            let overviewRoutesHTML = '';
+            data.config.dayRoutes.forEach(route => {
+                if(route.overview) {
+                    let metaHTML = route.overview.meta.map(m => `<span>${m}</span>`).join('');
+                    overviewRoutesHTML += `
+                        <div class="route-content content-route-${route.id}">
+                            <div class="time-header">OVERVIEW / 路線總覽</div>
+                            <h1 class="title">${route.overview.title}</h1>
+                            <div class="flow-diagram">${route.overview.flow}</div>
+                            <div class="meta-info">${metaHTML}</div>
+                        </div>
+                    `;
+                }
+            });
 
-                // 渲染右側內容區
+            scrollArea.insertAdjacentHTML('beforeend', `
+                <section id="time-overview" class="section" data-phase="overview">
+                    <div class="section-track">
+                        ${overviewRoutesHTML}
+                    </div>
+                </section>
+            `);
+
+            // 2. 動態插入各時間節點行程
+            data.schedule.forEach(point => {
+                navContainer.insertAdjacentHTML('beforeend', `<a href="#${point.timeId}" class="nav-item">${point.timeLabel}</a>`);
+
                 let routesHTML = '';
                 for (const [routeKey, routeData] of Object.entries(point.routes)) {
-                    
-                    // 組合 meta 資訊
                     let metaHTML = routeData.meta.map(m => `<span>${m}</span>`).join('');
-                    
-                    // 組合 按鈕
                     let btnsHTML = routeData.links.map(link => 
                         `<a href="${link.url}" target="_blank" class="nav-btn">${link.label}</a>`
                     ).join('');
 
                     routesHTML += `
                         <div class="route-content content-route-${routeKey}">
-                            <div class="time-header">${point.timeLabel} ${point.action}</div>
+                            <div class="time-header">${point.timeLabel} / ${point.action}</div>
                             <h2 class="title">${routeData.title}</h2>
                             <div class="meta-info">${metaHTML}</div>
                             <p class="description">${routeData.description}</p>
@@ -477,14 +482,13 @@
                     `;
                 }
 
-                const sectionHTML = `
+                scrollArea.insertAdjacentHTML('beforeend', `
                     <section id="${point.timeId}" class="section" data-phase="${point.phase}">
                         <div class="section-track">
                             ${routesHTML}
                         </div>
                     </section>
-                `;
-                scrollArea.insertAdjacentHTML('beforeend', sectionHTML);
+                `);
             });
         }
 
@@ -500,20 +504,16 @@
             });
         }
 
-        // --- 3. 路線切換與狀態寫入 ---
         function setRoute(routeId, phase, btnElement) {
-            // 更新 UI 狀態
             const container = btnElement.parentElement;
             container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
 
-            // 寫入 Body Attribute 控制顯示
             if (phase === 'day') {
                 document.body.setAttribute('data-active-route', routeId);
                 sessionStorage.setItem('axisDayRoute', routeId);
             } else {
                 document.body.setAttribute('data-active-night-route', routeId);
-                // 同步綁定到主屬性，方便 CSS 統一控制
                 document.body.setAttribute('data-active-route', routeId); 
                 sessionStorage.setItem('axisNightRoute', routeId);
             }
@@ -529,7 +529,6 @@
             document.body.setAttribute('data-active-route', state.dayRoute);
         }
 
-        // --- 4. 滾動同步與時間定位 (Intersection Observer) ---
         function initObservers() {
             const sections = document.querySelectorAll(".section");
             const navItems = document.querySelectorAll(".nav-item");
@@ -537,19 +536,22 @@
             const daySelector = document.getElementById("day-selector");
             const nightSelector = document.getElementById("night-selector");
 
+            // 使用精準的 50% 邊界捕捉置中物件
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute("id");
                         const phase = entry.target.getAttribute("data-phase");
 
-                        // 1. 聯動左側選單
                         navItems.forEach(item => item.classList.remove("active"));
                         const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
-                        if (activeLink) activeLink.classList.add("active");
+                        if (activeLink) {
+                            activeLink.classList.add("active");
+                            // 若左側時間軸超過螢幕高度，自動滾動對齊
+                            activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                        }
 
-                        // 2. 聯動頂部控制項並套用對應的 Session 狀態
-                        if (phase === "day") {
+                        if (phase === "day" || phase === "overview") {
                             daySelector.classList.remove("hidden");
                             nightSelector.classList.add("hidden");
                             document.body.setAttribute('data-active-route', sessionStorage.getItem('axisDayRoute') || 'a');
@@ -558,17 +560,15 @@
                             nightSelector.classList.remove("hidden");
                             document.body.setAttribute('data-active-route', sessionStorage.getItem('axisNightRoute') || 'shop');
                         } else {
-                            // return (收束階段)，隱藏選擇器
                             daySelector.classList.add("hidden");
                             nightSelector.classList.add("hidden");
                         }
                     }
                 });
-            }, { root: scrollArea, rootMargin: "-20% 0px -50% 0px", threshold: 0 });
+            }, { root: scrollArea, rootMargin: "-49% 0px -49% 0px", threshold: 0 });
 
             sections.forEach(section => observer.observe(section));
 
-            // 左側時間軸點擊平滑滾動
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -577,7 +577,6 @@
             });
         }
 
-        // --- 5. 時間錨點運算邏輯 ---
         function scrollToCurrentTime() {
             const currentHour = new Date().getHours();
             let targetId = "time-10"; 
@@ -587,6 +586,7 @@
             else if (currentHour >= 15) targetId = "time-15";
             else if (currentHour >= 13) targetId = "time-13";
             else if (currentHour >= 11) targetId = "time-11";
+            else targetId = "time-overview";
 
             const targetSection = document.getElementById(targetId);
             if (targetSection) targetSection.scrollIntoView({ behavior: 'smooth' });
