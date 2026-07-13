@@ -23,7 +23,7 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow: hidden; /* 鎖死外層，全交給 content-area 滾動 */
+            overflow: hidden; 
         }
 
         .scroll-container {
@@ -33,7 +33,7 @@
         .scroll-container::-webkit-scrollbar { display: none; }
 
         /* =========================================
-           2. 系統狀態與浮動控制區 (Z-index 最高層)
+           2. 系統狀態與浮動控制區 
            ========================================= */
         #loader {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -41,7 +41,7 @@
             z-index: 999; transition: opacity 0.5s; text-align: center;
         }
 
-        /* 🚀 路線切換器 (全域頂部正中央) */
+        /* 路線切換器 (全域頂部正中央) */
         .selector-container {
             position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
             z-index: 110; display: flex; gap: 10px;
@@ -90,26 +90,26 @@
         }
 
         /* =========================================
-           3. 左側時間軸 (1/3 螢幕高度、純線條)
+           3. 左側時間軸 (防重疊修正)
            ========================================= */
         .sidebar {
-            position: fixed; top: 0; left: 0; width: 90px; height: 100vh;
-            display: flex; align-items: center; /* 垂直置中 */
-            pointer-events: none; /* 防止擋住左側滑動 */
+            position: fixed; top: 0; left: 0; width: 120px; /* 加寬確保文字不會溢出 */
+            height: 100vh; display: flex; align-items: center; 
+            pointer-events: none; 
             z-index: 100;
         }
 
         .timeline-nav {
             display: flex; flex-direction: column; justify-content: center;
-            gap: 12px; /* 緊密堆疊 */
-            max-height: 33vh; /* 🚀 限制最大高度為畫面的 1/3 */
-            pointer-events: auto; /* 允許點擊 */
+            gap: 12px; 
+            max-height: 33vh; 
+            pointer-events: auto; 
         }
 
         .nav-item {
             display: flex; align-items: center; gap: 12px;
             padding-left: 20px; text-decoration: none;
-            color: transparent; font-size: 0; /* 🚀 預設隱藏文字 */
+            color: transparent; font-size: 0; 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -118,7 +118,6 @@
             background-color: var(--line-color); transition: all 0.4s ease;
         }
 
-        /* 啟動狀態：線條變長、文字浮現 */
         .nav-item.active {
             color: var(--text-primary); font-size: 1rem; font-weight: 500;
         }
@@ -127,7 +126,7 @@
         }
 
         /* =========================================
-           4. 全螢幕投影片佈局 (Slideshow Snap)
+           4. 全螢幕投影片佈局 
            ========================================= */
         .app-layout { opacity: 0; transition: opacity 0.8s ease; }
 
@@ -137,15 +136,19 @@
         }
 
         .section {
-            width: 100%; height: 100vh; flex-shrink: 0; /* 🚀 強制每頁 100vh 不妥協 */
+            width: 100%; height: 100vh; flex-shrink: 0; 
             scroll-snap-align: start; scroll-snap-stop: always; 
-            display: flex; align-items: center; /* 內容垂直置中 */
+            display: flex; align-items: center; 
             
-            /* 安全邊距：上(避開按鈕) 右 下(避開呼吸燈) 左(避開時間軸) */
-            padding: 90px 40px 60px 100px; 
+            /* 防重疊修正：左側增加安全距離 (140px) */
+            padding: 90px 40px 60px 140px; 
             position: relative;
         }
-        @media (max-width: 899px) { .section { padding: 100px 30px 40px 90px; } }
+        
+        /* 手機版防重疊修正：左側增加安全距離 (120px) */
+        @media (max-width: 899px) { 
+            .section { padding: 100px 30px 40px 120px; } 
+        }
 
         /* =========================================
            5. 內容卡片與流程圖
@@ -155,7 +158,7 @@
         .route-content {
             display: none; animation: fadeIn 0.4s ease forwards;
             width: 100%; 
-            max-height: calc(100vh - 160px); /* 🚀 防止內容過長導致跑版，啟用內部滾動 */
+            max-height: calc(100vh - 160px); 
             overflow-y: auto; padding-right: 10px;
         }
         
