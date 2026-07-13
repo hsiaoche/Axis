@@ -9,9 +9,9 @@
            1. Design Tokens (極簡設計變數)
            ========================================= */
         :root {
-            --bg-color: #050505;       /* 極致黑 */
+            --bg-color: #050505;       
             --text-primary: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.5); /* 半透明文字 */
+            --text-muted: rgba(255, 255, 255, 0.5); 
             --line-color: rgba(255, 255, 255, 0.15);
             --accent-color: #ffffff;
             --timeline-width: 200px;
@@ -24,10 +24,9 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow: hidden; /* 隱藏全局滾動，交由 main 處理 */
+            overflow: hidden; 
         }
 
-        /* 隱藏滾動條 */
         .scroll-container {
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -35,7 +34,7 @@
         .scroll-container::-webkit-scrollbar { display: none; }
 
         /* =========================================
-           2. Floating Selectors (頂部固定切換器)
+           2. Floating Elements (浮動控制項)
            ========================================= */
         .selector-container {
             position: fixed;
@@ -46,18 +45,18 @@
             gap: 10px;
             background: rgba(20, 20, 20, 0.6);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 6px;
             border-radius: 40px;
             border: 1px solid var(--line-color);
             transition: opacity 0.3s, transform 0.3s;
         }
 
-        /* 隱藏非當前階段的切換器 */
         .selector-container.hidden {
             opacity: 0;
             pointer-events: none;
             transform: translateY(-10px);
-            position: absolute; /* 避免佔據空間 */
+            position: absolute; 
         }
 
         .toggle-btn {
@@ -78,6 +77,45 @@
             color: var(--bg-color);
         }
 
+        /* 🔴 新增：當前時間定位鈕 (微光點) */
+        .time-anchor-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 60px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: transparent;
+            border: 1px solid var(--line-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .time-anchor-btn::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            animation: pulse 2s infinite;
+        }
+
+        .time-anchor-btn:hover {
+            border-color: var(--text-primary);
+            transform: scale(1.05);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
         /* =========================================
            3. Layout Architecture (左右佈局)
            ========================================= */
@@ -87,7 +125,6 @@
             width: 100vw;
         }
 
-        /* 左側：時間軸 */
         .sidebar {
             width: var(--timeline-width);
             height: 100vh;
@@ -158,7 +195,11 @@
             transform: scale(1.3);
         }
 
-        /* 右側：全螢幕滾動區 */
+        /* 收束點視覺強化 (Sync Node) */
+        .nav-item.sync-node::before {
+            border-radius: 2px; /* 方形代表終點/集合點 */
+        }
+
         .content-area {
             flex-grow: 1;
             height: 100vh;
@@ -182,11 +223,10 @@
            4. Content Styling (內容與排版細節)
            ========================================= */
         .route-content {
-            display: none; /* 預設隱藏，由 JS 控制顯示 */
+            display: none; 
             animation: fadeIn 0.4s ease forwards;
         }
 
-        /* 透過 body 的 class 來控制當前顯示的路線 */
         body.route-day-a .content-day-a { display: block; }
         body.route-day-b .content-day-b { display: block; }
         body.route-night-shop .content-night-shop { display: block; }
@@ -218,7 +258,6 @@
             margin-bottom: 20px;
         }
 
-        /* 資訊列 (交通、費用) */
         .meta-info {
             font-size: 0.85rem;
             color: #888;
@@ -229,7 +268,6 @@
             padding-left: 15px;
         }
 
-        /* 景點介紹 (依要求：縮小並半透明) */
         .description {
             font-size: 0.9rem;
             font-weight: 300;
@@ -239,7 +277,6 @@
             line-height: 1.8;
         }
 
-        /* 導航按鈕 (極簡膠囊) */
         .btn-group {
             display: flex;
             gap: 15px;
@@ -278,7 +315,6 @@
         @media (max-width: 900px) {
             .app-layout { flex-direction: column; }
             
-            /* 手機版時間軸改為頂部橫向滑動 */
             .sidebar {
                 width: 100vw;
                 height: auto;
@@ -292,9 +328,10 @@
             .nav-item::before { display: none; }
             .nav-item.active { font-size: 1.1rem; border-bottom: 2px solid var(--accent-color); }
 
-            /* 切換器位置調整 */
             .selector-container { top: 70px; right: 50%; transform: translateX(50%); width: max-content; }
             .selector-container.hidden { transform: translate(50%, -10px); }
+
+            .time-anchor-btn { bottom: 30px; right: 30px; width: 40px; height: 40px; }
 
             .section { padding: 0 30px; }
             .title { font-size: 2rem; }
@@ -304,15 +341,18 @@
 <body class="route-day-a route-night-shop">
 
     <div id="day-selector" class="selector-container">
-        <button class="toggle-btn active" onclick="setDayRoute('a', this)">清澄工藝線</button>
-        <button class="toggle-btn" onclick="setDayRoute('b', this)">村上文學線</button>
+        <button class="toggle-btn" data-route="a" onclick="setDayRoute('a', this)">清澄工藝線</button>
+        <button class="toggle-btn" data-route="b" onclick="setDayRoute('b', this)">村上文學線</button>
     </div>
 
     <div id="night-selector" class="selector-container hidden">
-        <button class="toggle-btn active" onclick="setNightRoute('shop', this)">質感購物</button>
-        <button class="toggle-btn" onclick="setNightRoute('intro', this)">Intro爵士</button>
-        <button class="toggle-btn" onclick="setNightRoute('dug', this)">DUG爵士</button>
+        <button class="toggle-btn" data-route="shop" onclick="setNightRoute('shop', this)">質感購物</button>
+        <button class="toggle-btn" data-route="intro" onclick="setNightRoute('intro', this)">Intro爵士</button>
+        <button class="toggle-btn" data-route="dug" onclick="setNightRoute('dug', this)">DUG爵士</button>
     </div>
+
+    <!-- 🟢 新增：定位回當前時間的按鈕 -->
+    <button class="time-anchor-btn" onclick="scrollToCurrentTime()" title="回到當下行程"></button>
 
     <div class="app-layout">
         
@@ -323,7 +363,7 @@
                 <a href="#time-13" class="nav-item">13:30</a>
                 <a href="#time-15" class="nav-item">15:00</a>
                 <a href="#time-18" class="nav-item">18:00</a>
-                <a href="#time-22" class="nav-item">22:00</a>
+                <a href="#time-22" class="nav-item sync-node">22:00</a>
             </div>
         </nav>
 
@@ -519,29 +559,66 @@
     </div>
 
     <script>
-        // --- 1. 頂部切換器邏輯 (控制 Body Class 達成全局狀態保留) ---
+        // --- 1. 初始化與狀態讀取 (Session Storage) ---
+        function loadSavedState() {
+            const savedDayRoute = sessionStorage.getItem('dayRoute') || 'a';
+            const savedNightRoute = sessionStorage.getItem('nightRoute') || 'shop';
+
+            // 觸發對應的按鈕邏輯
+            const dayBtn = document.querySelector(`#day-selector .toggle-btn[data-route="${savedDayRoute}"]`);
+            if(dayBtn) setDayRoute(savedDayRoute, dayBtn);
+
+            const nightBtn = document.querySelector(`#night-selector .toggle-btn[data-route="${savedNightRoute}"]`);
+            if(nightBtn) setNightRoute(savedNightRoute, nightBtn);
+        }
+
+        // --- 2. 頂部切換器邏輯 (寫入狀態並更新 Class) ---
         function setDayRoute(route, btnElement) {
-            // 更新按鈕視覺
             document.querySelectorAll('#day-selector .toggle-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
             
-            // 更新 Body 狀態
             document.body.classList.remove('route-day-a', 'route-day-b');
             document.body.classList.add(`route-day-${route}`);
+            sessionStorage.setItem('dayRoute', route); // 保存狀態
         }
 
         function setNightRoute(route, btnElement) {
-            // 更新按鈕視覺
             document.querySelectorAll('#night-selector .toggle-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
             
-            // 更新 Body 狀態
             document.body.classList.remove('route-night-shop', 'route-night-intro', 'route-night-dug');
             document.body.classList.add(`route-night-${route}`);
+            sessionStorage.setItem('nightRoute', route); // 保存狀態
         }
 
-        // --- 2. 滾動偵測與時間軸同步 (Intersection Observer) ---
+        // --- 3. 智能時間定位邏輯 ---
+        function scrollToCurrentTime() {
+            const currentHour = new Date().getHours();
+            let targetId = "time-10"; // 預設早晨
+            
+            // 簡易的時間分段判斷
+            if (currentHour >= 22 || currentHour < 4) {
+                targetId = "time-22";
+            } else if (currentHour >= 18) {
+                targetId = "time-18";
+            } else if (currentHour >= 15) {
+                targetId = "time-15";
+            } else if (currentHour >= 13) {
+                targetId = "time-13";
+            } else if (currentHour >= 11) {
+                targetId = "time-11";
+            }
+
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // --- 4. 滾動偵測與時間軸同步 (Intersection Observer) ---
         document.addEventListener("DOMContentLoaded", () => {
+            loadSavedState(); // 網頁載入時恢復上次選擇的路線
+
             const sections = document.querySelectorAll(".section");
             const navItems = document.querySelectorAll(".nav-item");
             const scrollArea = document.getElementById("scroll-area");
@@ -551,20 +628,18 @@
 
             const observerOptions = {
                 root: scrollArea,
-                rootMargin: "-20% 0px -50% 0px", // 提早觸發
+                rootMargin: "-20% 0px -50% 0px", 
                 threshold: 0
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // 1. 同步左側時間軸
                         const id = entry.target.getAttribute("id");
                         navItems.forEach(item => item.classList.remove("active"));
                         const activeLink = document.querySelector(`.nav-item[href="#${id}"]`);
                         if (activeLink) activeLink.classList.add("active");
 
-                        // 2. 智能切換頂部選項 (判斷是在白天還是晚上)
                         const phase = entry.target.getAttribute("data-phase");
                         if (phase === "day") {
                             daySelector.classList.remove("hidden");
@@ -573,7 +648,6 @@
                             daySelector.classList.add("hidden");
                             nightSelector.classList.remove("hidden");
                         } else {
-                            // return phase (歸途)，隱藏所有選擇器保持畫面乾淨
                             daySelector.classList.add("hidden");
                             nightSelector.classList.add("hidden");
                         }
@@ -583,7 +657,6 @@
 
             sections.forEach(section => observer.observe(section));
 
-            // 左側點擊平滑滾動修正
             navItems.forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
